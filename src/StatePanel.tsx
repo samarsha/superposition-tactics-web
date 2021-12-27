@@ -1,9 +1,9 @@
 import { Gate } from "./quantum";
-import { AnimalDefs, AnimalState } from "./levelDefs";
+import { AnimalDefs, AnimalState, LevelDefinition } from "./levelDefs";
 import { EvaluationData } from "./evaluator";
 
 type StatePanelProps = {
-  animals: AnimalDefs,
+  levelDef: LevelDefinition,
   evalData?: EvaluationData,
 }
 
@@ -23,7 +23,8 @@ function imageNameFromEntry(name: string, state: AnimalState): string {
   return "logo192.png";
 }
 
-function StatePanel({ animals, evalData }: StatePanelProps) {
+function StatePanel({ levelDef, evalData }: StatePanelProps) {
+  let animals = levelDef.animals;
   return (
     <div className="state-panel">
       <h2>Current State</h2>
@@ -67,6 +68,16 @@ function StatePanel({ animals, evalData }: StatePanelProps) {
           </tr>
         })}
       </table>
+      {levelDef.bannedCommands.length === 0
+        ? undefined
+        : <div>
+          <h3>Banned Commands</h3>
+          {levelDef.bannedCommands.map(c =>
+            <div>
+              {animals.get(c.attacker)?.name} can't shoot {animals.get(c.target)?.name}
+            </div>
+          )}
+        </div>}
     </div>
   );
 }

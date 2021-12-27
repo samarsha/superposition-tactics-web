@@ -36,7 +36,7 @@ export default function () {
 
       <div className="main-panel">
         <StatePanel
-          animals={level.animals}
+          levelDef={level}
           evalData={evalState.kind === "calculating" ? evalState.data : undefined}
         />
 

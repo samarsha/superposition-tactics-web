@@ -23,6 +23,9 @@ function startEvaluation(levelDef: LevelDefinition, commands: Command[]): Evalua
     commands = Array.prototype.concat(levelDef.dogInitialCommands, commands, levelDef.dogFinalCommands);
     if (commands.some(c => c.attacker == c.target))
         return { kind: "error", message: "Cannot command a cat to shoot itself" };
+    if (commands.some(c => levelDef.bannedCommands.some(c2 =>
+        c.attacker === c2.attacker && c.target === c2.target)))
+        return { kind: "error", message: "That command is banned in this level" };
 
     return { kind: "calculating", data: { trial: 0 } }
 }

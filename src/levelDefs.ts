@@ -11,15 +11,16 @@ type AnimalDefs = AnimalMap<{
 type LevelDefinition = {
     levelName: string,
     animals: AnimalDefs,
+    bannedCommands: Command[],
     dogInitialCommands: Command[],
     dogFinalCommands: Command[],
     referenceSolution: Command[],
 }
 
-function parseAnimalDefs(input: String): AnimalDefs {
+function parseAnimalDefs(input: String): [AnimalDefs, Command[]] {
     let parts = input.split("\n");
-    return new Map(parts.flatMap((part, i) => {
-        if (part.startsWith("(")) return []; // TODO - handle visibility
+    let animals = new Map(parts.flatMap((part, i) => {
+        if (part.startsWith("Banned: ")) return [];
         let gate = Gate.CX;
         let subparts1 = part.split(", carries a ");
         if (subparts1.length > 1) {
@@ -36,43 +37,52 @@ function parseAnimalDefs(input: String): AnimalDefs {
             startingState: startingState,
         }]]
     }));
+    let bannedCommands = parts.flatMap((part, i) => {
+        if (!part.startsWith("Banned: ")) return [];
+        let command = parseCommand(animals, part.slice(8));
+        return command === undefined ? [] : [command];
+    });
+    return [animals, bannedCommands];
+}
+
+function parseCommand(animals: AnimalDefs, input: string): Command | undefined {
+    let subparts = input.split(" shoots ");
+    if (subparts.length !== 2) return undefined;
+    let attackerStr = subparts[0];
+    let targetStr = subparts[1];
+
+    let animalIds = Array.from(animals.entries());
+    let attacker = animalIds.find(e => e[1].name === attackerStr)?.[0] as number;
+    let target = animalIds.find(e => e[1].name === targetStr)?.[0] as number;
+    return { attacker, target };
 }
 
 function parseCommands(animals: AnimalDefs, input: string): Command[] {
     if (input === undefined) return [];
     let parts = input.split("\n");
     return parts.flatMap(part => {
-        let subparts = part.split(" shoots ");
-        if (subparts.length !== 2) return [];
-        let attacker = subparts[0];
-        let target = subparts[1];
-
-        let animalIds = Array.from(animals.entries());
-        let atk = animalIds.find(e => e[1].name === attacker)?.[0] as number;
-        let tar = animalIds.find(e => e[1].name === target)?.[0] as number;
-        return [{
-            attacker: atk,
-            target: tar,
-        }]
+        let command = parseCommand(animals, part);
+        return command === undefined ? [] : [command];
     });
 }
 
 function parseLevel(input: string): LevelDefinition {
     let parts = input.split("\n---\n");
     let levelName = parts[0];
-    let animals = parseAnimalDefs(parts[1]);
+    let [animals, bannedCommands] = parseAnimalDefs(parts[1]);
 
     let orderParts = parts[2].split("[your orders]");
-    let initialOrders = parseCommands(animals, orderParts[0]);
-    let finalOrders = parseCommands(animals, orderParts[1]);
-    let solution = parseCommands(animals, parts[3]);
+    let dogInitialCommands = parseCommands(animals, orderParts[0]);
+    let dogFinalCommands = parseCommands(animals, orderParts[1]);
+    let referenceSolution = parseCommands(animals, parts[3]);
 
     return {
-        levelName: levelName,
-        animals: animals,
-        dogInitialCommands: initialOrders,
-        dogFinalCommands: finalOrders,
-        referenceSolution: solution,
+        levelName,
+        animals,
+        bannedCommands,
+        dogInitialCommands,
+        dogFinalCommands,
+        referenceSolution,
     }
 }
 
@@ -123,7 +133,7 @@ Level 4
 Cat A starts awake
 Cat B starts asleep
 Dog A starts asleep
-(Cat A can’t see Cat B)
+Banned: Cat A shoots Cat B
 ---
 [your orders]
 Dog A shoots Cat B
@@ -172,7 +182,7 @@ Cat A starts awake, carries a CH
 Cat B starts awake
 Cat C starts awake
 Dog A starts awake, carries a CH
-(Cat A can’t see Cat B)
+Banned: Cat A shoots Cat B
 ---
 Dog A shoots Cat B
 [your orders]
@@ -190,7 +200,7 @@ Level 9
 Cat A starts awake, carries a CH
 Cat B starts awake
 Cat C starts asleep
-(Cat B can’t see Cat C)
+Banned: Cat B shoots Cat C
 ---
 [your orders]
 ---
