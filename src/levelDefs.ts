@@ -140,6 +140,8 @@ Dog A shoots Cat B
 ---
 Cat A shoots Dog A
 ===
+Level 6
+---
 Cat A starts awake
 Cat B starts asleep
 Dog A starts random
@@ -151,7 +153,7 @@ Dog A shoots Cat A
 Cat B shoots Cat A
 Cat A shoots Cat B
 ===
-Level 6
+Level 7
 ---
 Cat A starts awake, carries a CH
 Cat B starts asleep, carries a CZ
@@ -162,7 +164,7 @@ Cat A shoots Cat B
 Cat B shoots Cat A
 Cat A shoots Cat B
 ===
-Level 7
+Level 8
 ---
 Cat A starts awake, carries a CH
 Cat B starts awake
@@ -181,7 +183,7 @@ Cat B shoots Cat C
 Cat C shoots Cat B
 Cat B shoots Cat C
 ===
-Level 8
+Level 9
 ---
 Cat A starts awake, carries a CH
 Cat B starts awake
@@ -196,7 +198,7 @@ Cat C shoots Cat B
 Cat A shoots Cat B
 Cat A shoots Cat C
 ===
-Level 9
+Level 10
 ---
 Cat A starts awake, carries a CH
 Cat B starts awake, carries a CZ
@@ -209,7 +211,7 @@ Cat A shoots Cat B
 Cat B shoots Dog A
 Cat A shoots Cat B
 ===
-Level 10
+Level 11
 ---
 Cat A starts awake, carries a CH
 Cat B starts awake
