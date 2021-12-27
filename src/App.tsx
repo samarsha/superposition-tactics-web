@@ -14,12 +14,17 @@ export default function () {
     { attacker: 4, target: 1 }
   ];
 
-  const [commands, setCommands] = useState([{ attacker: 1, target: 4 }]);
+  const [commands, setCommands] = useState(level.referenceSolution);
   const postamble = [{ attacker: 1, target: 4 }];
+
+  function onLevelChange(l: LevelDefinition): void {
+    setLevel(l);
+    setCommands(l.referenceSolution);
+  }
 
   return (
     <div className="App">
-      {levelSelector(level, setLevel)}
+      {levelSelector(level, onLevelChange)}
 
       <StatePanel animals={level.animals} />
 
