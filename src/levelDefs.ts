@@ -101,16 +101,6 @@ Cat B starts asleep
 ---
 Cat A shoots Cat B
 ===
-Evil Dog
----
-Cat A starts awake
-Dog A starts awake
----
-[your orders]
-Dog A shoots Cat A
----
-Cat A shoots Dog A
-===
 Can't See Me
 ---
 Cat A starts awake
