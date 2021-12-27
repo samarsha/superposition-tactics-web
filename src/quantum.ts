@@ -11,8 +11,6 @@ type Universe = {
 
 type QuantumState = Universe[];
 
-type AnimalDefs = Dict<{ name: string; gate: Gate }>;
-
 type Command = {
     readonly attacker: AnimalID;
     readonly target: AnimalID;
@@ -49,8 +47,7 @@ function normalize(quantumState: QuantumState): QuantumState {
     return newUniverses;
 }
 
-function processCommand(animalDefs: AnimalDefs, command: Command, quantumState: QuantumState): QuantumState {
-    let gate = animalDefs[command.attacker].gate;
+function processCommand(gate: Gate, command: Command, quantumState: QuantumState): QuantumState {
     return normalize(quantumState.flatMap(universe => {
         switch (gate) {
             case Gate.CX:
@@ -100,4 +97,5 @@ function processCommand(animalDefs: AnimalDefs, command: Command, quantumState: 
     }));
 }
 
-export type { AnimalID, Command };
+export type { AnimalID, Dict, Universe, QuantumState, Command };
+export { Gate, dictSet, processCommand };
