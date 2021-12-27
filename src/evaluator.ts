@@ -35,7 +35,7 @@ function step(levelDef: LevelDefinition, commands: Command[], evalData: Evaluati
 
     // Start a new trial
     if (evalData.trialData === undefined) {
-        let assignment = new Map(freeVars.map((v, i) => [v, (evalData.trial / 2 ** i) % 2 === 1]));
+        let assignment = new Map(freeVars.map((v, i) => [v, Math.floor(evalData.trial / 2 ** i) % 2 === 1]));
         let initialAwake = new Map(Array.from(levelDef.animals.entries()).map(e => {
             if (e[1].startingState == AnimalState.Random) return [e[0], assignment.get(e[0]) as boolean];
             return [e[0], e[1].startingState == AnimalState.Awake];
