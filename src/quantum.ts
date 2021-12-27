@@ -25,7 +25,8 @@ function dictSet<T>(dict: AnimalMap<T>, animal: AnimalID, t: T) {
 function normalize(quantumState: QuantumState): QuantumState {
     let newUniverses: QuantumState = [];
     for (let universe of quantumState) {
-        let existing = newUniverses.findIndex(u => u.awake === universe.awake);
+        let existing = newUniverses.findIndex(u =>
+            Array.from(u.awake.entries()).every(e => e[1] == universe.awake.get(e[0])));
         if (existing === -1) {
             newUniverses.push(universe);
         } else {
