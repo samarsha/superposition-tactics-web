@@ -32,6 +32,8 @@ function StatePanel({ animals, evalData }: StatePanelProps) {
           <th>State</th>
           <th>Name</th>
           <th>Gate</th>
+          {evalData?.trialData === undefined ? undefined :
+            evalData.trialData.quantumState.map(u => <th>{u.amplitude.toFixed(2)}</th>)}
         </tr>
         {Array.from(animals.entries()).map(e => {
           let overrideAwake = evalData?.trialData?.initialAwake.get(e[0]);
@@ -51,6 +53,12 @@ function StatePanel({ animals, evalData }: StatePanelProps) {
             <td className="animal-gate">
               {Gate[e[1].gate].slice(1)}
             </td>
+            {evalData?.trialData === undefined ? undefined :
+              evalData.trialData.quantumState.map(u => <td>
+                <img className="state-image" src={imageNameFromEntry(e[1].name,
+                  u.awake.get(e[0]) ? AnimalState.Awake : AnimalState.Asleep)}>
+                </img>
+              </td>)}
           </tr>
         })}
       </table>
