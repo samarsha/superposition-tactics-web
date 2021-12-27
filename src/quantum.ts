@@ -2,7 +2,7 @@ type AnimalID = number;
 
 enum Gate { CX, CZ, CH }
 
-type Dict<T> = Record<AnimalID, T>;
+type Dict<T> = Map<AnimalID, T>;
 
 type Universe = {
     readonly amplitude: number;
@@ -17,8 +17,8 @@ type Command = {
 }
 
 function dictSet<T>(dict: Dict<T>, animal: AnimalID, t: T) {
-    let dict2 = Object.assign({}, dict);
-    dict2[animal] = t;
+    let dict2 = new Map(dict);
+    dict2.set(animal, t);
     return dict2;
 }
 
@@ -51,15 +51,15 @@ function processCommand(gate: Gate, command: Command, quantumState: QuantumState
     return normalize(quantumState.flatMap(universe => {
         switch (gate) {
             case Gate.CX:
-                if (universe.awake[command.attacker]) {
+                if (universe.awake.get(command.attacker)) {
                     return {
                         amplitude: universe.amplitude,
-                        awake: dictSet(universe.awake, command.target, !universe.awake[command.target]),
+                        awake: dictSet(universe.awake, command.target, !universe.awake.get(command.target)),
                     };
                 }
                 return [universe];
             case Gate.CZ:
-                if (universe.awake[command.attacker] && universe.awake[command.target]) {
+                if (universe.awake.get(command.attacker) && universe.awake.get(command.target)) {
                     return {
                         amplitude: -1 * universe.amplitude,
                         awake: universe.awake,
@@ -67,8 +67,8 @@ function processCommand(gate: Gate, command: Command, quantumState: QuantumState
                 }
                 return [universe];
             case Gate.CH:
-                if (universe.awake[command.attacker]) {
-                    if (!universe.awake[command.target]) {
+                if (universe.awake.get(command.attacker)) {
+                    if (!universe.awake.get(command.target)) {
                         return [
                             {
                                 amplitude: universe.amplitude / Math.SQRT2,

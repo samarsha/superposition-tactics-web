@@ -18,7 +18,7 @@ type LevelDefinition = {
 
 function parseAnimalDefs(input: String): AnimalDefs {
     let parts = input.split("\n");
-    return parts.map(part => {
+    return new Map(parts.map((part, i) => {
         let gate = Gate.CX;
         let subparts1 = part.split(", carries a ");
         if (subparts1.length > 1) {
@@ -27,12 +27,12 @@ function parseAnimalDefs(input: String): AnimalDefs {
         let subparts2 = subparts1[0].split(" starts ");
         let name = subparts2[0];
         let startingState = AnimalStartingState[subparts2[1] as keyof typeof AnimalStartingState];
-        return {
+        return [i, {
             name: name,
             gate: gate,
             startingState: startingState,
-        }
-    });
+        }]
+    }));
 }
 
 function parseCommands(animals: AnimalDefs, input: string): Command[] {
@@ -42,9 +42,9 @@ function parseCommands(animals: AnimalDefs, input: string): Command[] {
         let attacker = subparts[0];
         let target = subparts[1];
 
-        let animalIds = Object.keys(animals).map(key => Number.parseInt(key));
-        let atk = animalIds.find(key => animals[key].name == attacker) as number;
-        let tar = animalIds.find(key => animals[key].name == target) as number;
+        let animalIds = Array.from(animals.entries());
+        let atk = animalIds.find(e => e[1].name == attacker)?.[0] as number;
+        let tar = animalIds.find(e => e[1].name == target)?.[0] as number;
         return {
             attacker: atk,
             target: tar,
@@ -73,12 +73,12 @@ function parseLevel(input: string): LevelDefinition {
 
 let level0: LevelDefinition = {
     levelName: "SWAP",
-    animals: {
-        0: { name: "Cat A", gate: Gate.CX, startingState: AnimalStartingState.Awake },
-        1: { name: "Cat B", gate: Gate.CX, startingState: AnimalStartingState.Awake },
-        2: { name: "Dog A", gate: Gate.CX, startingState: AnimalStartingState.Random },
-        3: { name: "Dog B", gate: Gate.CX, startingState: AnimalStartingState.Random },
-    },
+    animals: new Map([
+        [0, { name: "Cat A", gate: Gate.CX, startingState: AnimalStartingState.Awake }],
+        [1, { name: "Cat B", gate: Gate.CX, startingState: AnimalStartingState.Awake }],
+        [2, { name: "Dog A", gate: Gate.CX, startingState: AnimalStartingState.Random }],
+        [3, { name: "Dog B", gate: Gate.CX, startingState: AnimalStartingState.Random }],
+    ]),
     dogInitialCommands: [
         { attacker: 2, target: 0 },
         { attacker: 3, target: 1 },
