@@ -27,7 +27,9 @@ function parseAnimalDefs(input: String): AnimalDefs {
         }
         let subparts2 = subparts1[0].split(" starts ");
         let name = subparts2[0];
-        let startingState = AnimalState[subparts2[1] as keyof typeof AnimalState];
+        let state = subparts2[1];
+        state = state[0].toUpperCase() + state.slice(1);
+        let startingState = AnimalState[state as keyof typeof AnimalState];
         return [[i, {
             name: name,
             gate: gate,
@@ -55,7 +57,6 @@ function parseCommands(animals: AnimalDefs, input: string): Command[] {
 }
 
 function parseLevel(input: string): LevelDefinition {
-    console.log("Parsing level " + input);
     let parts = input.split("\n---\n");
     let levelName = parts[0];
     let animals = parseAnimalDefs(parts[1]);
