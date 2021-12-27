@@ -2,10 +2,10 @@ import { useState } from 'react';
 import './App.css';
 import { CommandPanel } from './CommandPanel';
 import { StatePanel } from './StatePanel';
-import { level1, LevelDefinition } from './levelDefs';
+import { levels, LevelDefinition } from './levelDefs';
 
 export default function () {
-  const [level, setLevel] = useState(level1);
+  const [level, setLevel] = useState(levels[0]);
 
   const roster = { cats: [1, 2, 3], dogs: [4, 5, 6] };
 
@@ -37,7 +37,6 @@ export default function () {
 }
 
 function levelSelector(level: LevelDefinition, onChange: (level: LevelDefinition) => void) {
-  const levels = [level1];
   const items = levels.map(l => <option value={l.levelName}>{l.levelName}</option>);
 
   function onSelectChange(e: React.ChangeEvent<HTMLSelectElement>): void {

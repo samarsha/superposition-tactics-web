@@ -18,7 +18,8 @@ type LevelDefinition = {
 
 function parseAnimalDefs(input: String): AnimalDefs {
     let parts = input.split("\n");
-    return new Map(parts.map((part, i) => {
+    return new Map(parts.flatMap((part, i) => {
+        if (part.startsWith("(")) return []; // TODO - handle visibility
         let gate = Gate.CX;
         let subparts1 = part.split(", carries a ");
         if (subparts1.length > 1) {
@@ -27,11 +28,11 @@ function parseAnimalDefs(input: String): AnimalDefs {
         let subparts2 = subparts1[0].split(" starts ");
         let name = subparts2[0];
         let startingState = AnimalState[subparts2[1] as keyof typeof AnimalState];
-        return [i, {
+        return [[i, {
             name: name,
             gate: gate,
             startingState: startingState,
-        }]
+        }]]
     }));
 }
 
@@ -54,6 +55,7 @@ function parseCommands(animals: AnimalDefs, input: string): Command[] {
 }
 
 function parseLevel(input: string): LevelDefinition {
+    console.log("Parsing level " + input);
     let parts = input.split("\n---\n");
     let levelName = parts[0];
     let animals = parseAnimalDefs(parts[1]);
@@ -72,34 +74,146 @@ function parseLevel(input: string): LevelDefinition {
     }
 }
 
-let level0: LevelDefinition = {
-    levelName: "SWAP",
-    animals: new Map([
-        [0, { name: "Cat A", gate: Gate.CX, startingState: AnimalState.Awake }],
-        [1, { name: "Cat B", gate: Gate.CX, startingState: AnimalState.Awake }],
-        [2, { name: "Dog A", gate: Gate.CX, startingState: AnimalState.Random }],
-        [3, { name: "Dog B", gate: Gate.CX, startingState: AnimalState.Random }],
-    ]),
-    dogInitialCommands: [
-        { attacker: 2, target: 0 },
-        { attacker: 3, target: 1 },
-    ],
-    dogFinalCommands: [
-        { attacker: 2, target: 1 },
-        { attacker: 3, target: 0 },
-    ],
-    referenceSolution: [
-        { attacker: 0, target: 1 },
-        { attacker: 1, target: 0 },
-        { attacker: 0, target: 1 },
-    ],
+function parseLevels(input: string): LevelDefinition[] {
+    let parts = input.split("\n===\n");
+    return parts.map(parseLevel);
 }
 
-let level1 = parseLevel(`Level 1
+let levels = parseLevels(
+    `Level 1
 ---
-Cat A starts Awake, carries a CH
-Cat B starts Awake
-Dog A starts Random
+Cat A starts awake
+Cat B starts awake
+Dog A starts random
+Dog B starts random
+---
+Dog A shoots Cat A
+Dog B shoots Cat B
+[your orders]
+Dog A shoots Cat B
+Dog B shoots Cat A
+---
+Cat A shoots Cat B
+Cat B shoots Cat A
+Cat A shoots Cat B
+===
+Level 2
+---
+Cat A starts awake
+Cat B starts asleep
+---
+[your orders]
+---
+Cat A shoots Cat B
+===
+Level 3
+---
+Cat A starts awake
+Dog A starts awake
+---
+[your orders]
+Dog A shoots Cat A
+---
+Cat A shoots Dog A
+===
+Level 4
+---
+Cat A starts awake
+Cat B starts asleep
+Dog A starts asleep
+(Cat A can’t see Cat B)
+---
+[your orders]
+Dog A shoots Cat B
+---
+Cat A shoots Dog A
+===
+Level 5
+---
+Cat A starts awake
+Cat B starts asleep
+Dog A starts random
+---
+Dog A shoots Cat B
+[your orders]
+Dog A shoots Cat B
+---
+Cat A shoots Dog A
+===
+Cat A starts awake
+Cat B starts asleep
+Dog A starts random
+---
+Dog A shoots Cat B
+[your orders]
+Dog A shoots Cat A
+---
+Cat B shoots Cat A
+Cat A shoots Cat B
+===
+Level 6
+---
+Cat A starts awake, carries a CH
+Cat B starts asleep, carries a CZ
+---
+[your orders]
+---
+Cat A shoots Cat B
+Cat B shoots Cat A
+Cat A shoots Cat B
+===
+Level 7
+---
+Cat A starts awake, carries a CH
+Cat B starts awake
+Cat C starts awake
+Dog A starts awake, carries a CH
+(Cat A can’t see Cat B)
+---
+Dog A shoots Cat B
+[your orders]
+---
+Cat B shoots Cat C
+Cat C shoots Cat B
+Cat B shoots Cat C
+Cat A shoots Cat C
+Cat B shoots Cat C
+Cat C shoots Cat B
+Cat B shoots Cat C
+===
+Level 8
+---
+Cat A starts awake, carries a CH
+Cat B starts awake
+Cat C starts asleep
+(Cat B can’t see Cat C)
+---
+[your orders]
+---
+Cat A shoots Cat B
+Cat A shoots Cat C
+Cat C shoots Cat B
+Cat A shoots Cat B
+Cat A shoots Cat C
+===
+Level 9
+---
+Cat A starts awake, carries a CH
+Cat B starts awake, carries a CZ
+Dog A starts random
+---
+Dog A shoots Cat B
+[your orders]
+---
+Cat A shoots Cat B
+Cat B shoots Dog A
+Cat A shoots Cat B
+===
+Level 10
+---
+Cat A starts awake, carries a CH
+Cat B starts awake
+Dog A starts random
 ---
 Dog A shoots Cat B
 [your orders]
@@ -112,4 +226,4 @@ Cat A shoots Dog A
 `);
 
 export type { AnimalDefs, LevelDefinition }
-export { level1, AnimalState }
+export { levels, AnimalState }
