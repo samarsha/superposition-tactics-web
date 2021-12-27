@@ -8,6 +8,7 @@ type StatePanelProps = {
 function StatePanel({ animals }: StatePanelProps) {
   return (
     <div className="state-panel">
+      <h2>Current State</h2>
       <table>
         <tr>
           <th>State</th>

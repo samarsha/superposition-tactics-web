@@ -1,0 +1,107 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.top-bar {
+  background-color: #c5c5c5;
+  padding: 16px;
+  border-bottom: 1px solid black;
+}
+
+.main-panel {
+  display: flex;
+  h2 {
+    margin: 8px 0;
+  }
+}
+.state-panel {
+  padding: 0 16px;
+  flex-grow: 1;
+  table {
+    width: 100%;
+  }
+  border-right: 1px solid black;
+}
+.command-panel {
+  padding: 0 16px;
+  flex-grow: 1;
+  ol {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  li {
+    margin: 8px 0;
+  }
+  .enemy-commands {
+    color: #a11414;
+  }
+  .command-editor {
+    position: relative;
+    color: #283397;
+    border: 1px solid #c8cefd;
+    margin: 8px 0;
+    padding: 0 0 10px 0;
+
+    .command-editor-bottom {
+      margin-top: 8px;
+      h3 {
+        margin: 0;
+        font-size: 16px;
+        font-style: italic;
+        color: #c8cefd;
+        text-align: center;
+      }
+    }
+    select,
+    button {
+      color: #283397;
+      background-color: white;
+      border: 1px solid #283397;
+      border-radius: 4px;
+      margin: 0 4px;
+      font-weight: bold;
+      height: 24px;
+      min-width: 24px;
+    }
+    button {
+      position: absolute;
+      right: 4px;
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import './App.css';
+import './App.scss';
 import { CommandPanel } from './CommandPanel';
 import { StatePanel } from './StatePanel';
 import { levels, LevelDefinition } from './levelDefs';
@@ -23,7 +23,7 @@ export default function () {
         <CommandPanel
           level={level}
           commands={commands}
-          onAdd={() => setCommands([...commands, { attacker: 1, target: 4 }])}
+          onAdd={() => setCommands([...commands, { attacker: 0, target: 1 }])}
           onChange={(command, index) => setCommands(commands.map((c, i) => i === index ? command : c))}
           onRemove={index => setCommands(commands.filter((_, i) => i !== index))}
         />
@@ -45,7 +45,7 @@ function levelSelector(level: LevelDefinition, onChange: (level: LevelDefinition
   }
 
   return (
-    <div className="level">
+    <div className="top-bar">
       Current Level:
       <select value={level.levelName} onChange={onSelectChange}>
         {items}

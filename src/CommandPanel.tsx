@@ -15,9 +15,10 @@ function CommandPanel({ level, commands, onAdd, onChange, onRemove }: CommandPan
 
   return (
     <div className="command-panel">
-      <ol>{preambleItems}</ol>
+      <h2>Commands</h2>
+      <ol className="enemy-commands">{preambleItems}</ol>
       {commandEditor(level, commands, onAdd, onChange, onRemove)}
-      <ol>{postambleItems}</ol>
+      <ol className="enemy-commands">{postambleItems}</ol>
     </div>
   );
 }
@@ -42,7 +43,10 @@ function commandEditor(
   return (
     <div className="command-editor">
       <ol>{commandItems}</ol>
-      <button onClick={onAdd}>+ Add</button>
+      <div className="command-editor-bottom">
+        <button onClick={onAdd}>+</button>
+        <h3>Your orders here</h3>
+      </div>
     </div>
   );
 }
@@ -53,8 +57,8 @@ function editableCommandItem(
   onChange: (command: Command) => void,
   onRemove: () => void,
 ): JSX.Element {
-  const attackers = animalSelector(level, command.attacker, id => onChange({ ...command, attacker: id }));
-  const targets = animalSelector(level, command.target, id => onChange({ ...command, target: id }));
+  const attackers = animalSelector(level, true, command.attacker, id => onChange({ ...command, attacker: id }));
+  const targets = animalSelector(level, false, command.target, id => onChange({ ...command, target: id }));
 
   return (
     <span className="command-item">
@@ -66,10 +70,12 @@ function editableCommandItem(
 
 function animalSelector(
   level: LevelDefinition,
+  catsOnly: boolean,
   selected: AnimalID,
   onChange: (id: number) => void,
 ): JSX.Element {
-  const items = Array.from(level.animals.keys()).map(id => <option value={id}>{showAnimal(level, id)}</option>);
+  const canCommand = Array.from(level.animals.keys()).filter(a => !catsOnly || level.animals.get(a)?.name.startsWith("Cat"));
+  const items = canCommand.map(id => <option value={id}>{showAnimal(level, id)}</option>);
 
   return (
     <select value={selected} onChange={e => onChange(Number(e.target.value))}>
