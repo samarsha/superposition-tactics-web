@@ -29,11 +29,13 @@ function StatePanel({ animals, evalData }: StatePanelProps) {
       <h2>Current State</h2>
       <table>
         <tr>
-          <th>State</th>
+          {evalData?.trialData === undefined
+            ? <th>State</th>
+            : evalData.trialData.quantumState.map(u =>
+              <th>{u.amplitude.toFixed(2)}</th>
+            )}
           <th>Name</th>
           <th>Gate</th>
-          {evalData?.trialData === undefined ? undefined :
-            evalData.trialData.quantumState.map(u => <th>{u.amplitude.toFixed(2)}</th>)}
         </tr>
         {Array.from(animals.entries()).map(e => {
           let overrideAwake = evalData?.trialData?.initialAwake.get(e[0]);
@@ -42,23 +44,26 @@ function StatePanel({ animals, evalData }: StatePanelProps) {
             : overrideAwake ? AnimalState.Awake : AnimalState.Asleep;
 
           return <tr className="animal-display">
-            <td className="animal-state">
-              {/* {AnimalState[e[1].startingState]} */}
-              <img className="state-image" src={imageNameFromEntry(e[1].name, displayState)}>
-              </img>
-            </td>
+
+            {evalData?.trialData === undefined
+              ? <td className="animal-state">
+                {/* {AnimalState[e[1].startingState]} */}
+                <img className="state-image" src={imageNameFromEntry(e[1].name, displayState)}>
+                </img>
+              </td>
+              : evalData.trialData.quantumState.map(u =>
+                <td className="animal-state">
+                  <img className="state-image" src={imageNameFromEntry(e[1].name,
+                    u.awake.get(e[0]) ? AnimalState.Awake : AnimalState.Asleep)}>
+                  </img>
+                </td>
+              )}
             <td className="animal-name">
               {e[1].name}
             </td>
             <td className="animal-gate">
               {Gate[e[1].gate].slice(1)}
             </td>
-            {evalData?.trialData === undefined ? undefined :
-              evalData.trialData.quantumState.map(u => <td>
-                <img className="state-image" src={imageNameFromEntry(e[1].name,
-                  u.awake.get(e[0]) ? AnimalState.Awake : AnimalState.Asleep)}>
-                </img>
-              </td>)}
           </tr>
         })}
       </table>
