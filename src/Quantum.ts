@@ -13,11 +13,7 @@ type Universe = {
 
 type QuantumState = Universe[];
 
-type FullState = {
-    readonly quantumState: QuantumState;
-    readonly names: Dict<string>;
-    readonly gates: Dict<Gate>;
-}
+type AnimalDefs = Dict<{ name: string; gate: Gate }>;
 
 type Command = {
     readonly attacker: AnimalID;
@@ -55,9 +51,9 @@ function normalize(quantumState: QuantumState): QuantumState {
     return newUniverses;
 }
 
-function processCommand(fullState: FullState, command: Command): QuantumState {
-    let gate = fullState.gates[command.attacker];
-    return normalize(fullState.quantumState.flatMap(universe => {
+function processCommand(animalDefs: AnimalDefs, command: Command, quantumState: QuantumState): QuantumState {
+    let gate = animalDefs[command.attacker].gate;
+    return normalize(quantumState.flatMap(universe => {
         switch (gate) {
             case Gate.CX:
                 if (universe.awake[command.attacker]) {
