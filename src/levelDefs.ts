@@ -92,7 +92,85 @@ function parseLevels(input: string): LevelDefinition[] {
 }
 
 let levels = parseLevels(
-    `Level 1
+    `First Level
+---
+Cat A starts awake
+Cat B starts asleep
+---
+[your orders]
+---
+Cat A shoots Cat B
+===
+Evil Dog
+---
+Cat A starts awake
+Dog A starts awake
+---
+[your orders]
+Dog A shoots Cat A
+---
+Cat A shoots Dog A
+===
+Can't See Me
+---
+Cat A starts awake
+Cat B starts asleep
+Cat C starts asleep
+Banned: Cat A shoots Cat C
+---
+[your orders]
+---
+Cat A shoots Cat B
+Cat B shoots Cat C
+===
+Evil Dog
+---
+Cat A starts awake
+Dog A starts awake
+---
+[your orders]
+Dog A shoots Cat A
+---
+Cat A shoots Dog A
+===
+Useful Dog
+---
+Cat A starts awake
+Cat B starts asleep
+Dog A starts asleep
+Banned: Cat A shoots Cat B
+---
+[your orders]
+Dog A shoots Cat B
+---
+Cat A shoots Dog A
+===
+Random Dog
+---
+Cat A starts awake
+Cat B starts asleep
+Dog A starts random
+---
+Dog A shoots Cat B
+[your orders]
+Dog A shoots Cat B
+---
+Cat A shoots Dog A
+===
+Confusing Dog
+---
+Cat A starts awake
+Cat B starts asleep
+Dog A starts random
+---
+Dog A shoots Cat B
+[your orders]
+Dog A shoots Cat A
+---
+Cat B shoots Cat A
+Cat A shoots Cat B
+===
+SWAP
 ---
 Cat A starts awake
 Cat B starts awake
@@ -109,63 +187,73 @@ Cat A shoots Cat B
 Cat B shoots Cat A
 Cat A shoots Cat B
 ===
-Level 2
+Intro to Hadamard
 ---
 Cat A starts awake
-Cat B starts asleep
+Cat B starts awake
+Dog A starts awake, carries a CH
+Dog B starts asleep, carries a CH
 ---
+Dog A shoots Cat B
+[your orders]
+Dog B shoots Cat B
+---
+Cat A shoots Dog B
+===
+Hadamard's Cat
+---
+Cat A starts awake, carries a CH
+Cat B starts awake
+Dog A starts awake, carries a CH
+---
+Dog A shoots Cat B
 [your orders]
 ---
 Cat A shoots Cat B
 ===
-Level 3
+Predictive Hadamard
 ---
-Cat A starts awake
-Dog A starts awake
----
-[your orders]
-Dog A shoots Cat A
----
-Cat A shoots Dog A
-===
-Level 4
----
-Cat A starts awake
-Cat B starts asleep
-Dog A starts asleep
-Banned: Cat A shoots Cat B
+Cat A starts awake, carries a CH
+Cat B starts awake
+Dog A starts awake, carries a CH
+Banned: Cat B shoots Dog A
 ---
 [your orders]
 Dog A shoots Cat B
 ---
-Cat A shoots Dog A
-===
-Level 5
----
-Cat A starts awake
-Cat B starts asleep
-Dog A starts random
----
-Dog A shoots Cat B
-[your orders]
-Dog A shoots Cat B
----
-Cat A shoots Dog A
-===
-Level 6
----
-Cat A starts awake
-Cat B starts asleep
-Dog A starts random
----
-Dog A shoots Cat B
-[your orders]
-Dog A shoots Cat A
----
-Cat B shoots Cat A
 Cat A shoots Cat B
 ===
-Level 7
+Reverse the CX
+---
+Cat A starts awake, carries a CH
+Cat B starts awake
+Cat C starts asleep
+Banned: Cat B shoots Cat C
+---
+[your orders]
+---
+Cat A shoots Cat B
+Cat A shoots Cat C
+Cat C shoots Cat B
+Cat A shoots Cat B
+Cat A shoots Cat C
+===
+Undo the Dog
+---
+Cat A starts awake, carries a CH
+Cat B starts awake
+Dog A starts random
+---
+Dog A shoots Cat B
+[your orders]
+---
+Cat A shoots Cat B
+Cat A shoots Dog A
+Cat B shoots Dog A
+Cat A shoots Cat B
+Cat A shoots Dog A
+===
+Hadamard and Z
 ---
 Cat A starts awake, carries a CH
 Cat B starts asleep, carries a CZ
@@ -176,7 +264,20 @@ Cat A shoots Cat B
 Cat B shoots Cat A
 Cat A shoots Cat B
 ===
-Level 8
+Make a CX
+---
+Cat A starts awake, carries a CH
+Cat B starts awake, carries a CZ
+Dog A starts random
+---
+Dog A shoots Cat B
+[your orders]
+---
+Cat A shoots Cat B
+Cat B shoots Dog A
+Cat A shoots Cat B
+===
+Undo the Hadamard
 ---
 Cat A starts awake, carries a CH
 Cat B starts awake
@@ -194,49 +295,6 @@ Cat A shoots Cat C
 Cat B shoots Cat C
 Cat C shoots Cat B
 Cat B shoots Cat C
-===
-Level 9
----
-Cat A starts awake, carries a CH
-Cat B starts awake
-Cat C starts asleep
-Banned: Cat B shoots Cat C
----
-[your orders]
----
-Cat A shoots Cat B
-Cat A shoots Cat C
-Cat C shoots Cat B
-Cat A shoots Cat B
-Cat A shoots Cat C
-===
-Level 10
----
-Cat A starts awake, carries a CH
-Cat B starts awake, carries a CZ
-Dog A starts random
----
-Dog A shoots Cat B
-[your orders]
----
-Cat A shoots Cat B
-Cat B shoots Dog A
-Cat A shoots Cat B
-===
-Level 11
----
-Cat A starts awake, carries a CH
-Cat B starts awake
-Dog A starts random
----
-Dog A shoots Cat B
-[your orders]
----
-Cat A shoots Cat B
-Cat A shoots Dog A
-Cat B shoots Dog A
-Cat A shoots Cat B
-Cat A shoots Dog A
 `);
 
 export type { AnimalDefs, LevelDefinition }
