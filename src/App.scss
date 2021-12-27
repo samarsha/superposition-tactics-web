@@ -55,10 +55,13 @@
   border-right: 1px solid black;
   table {
     width: 100%;
+    th {
+      min-width: 64px;
+    }
   }
   .state-image {
-    width: 32px;
-    height: 32px;
+    width: 64px;
+    height: 64px;
   }
 }
 

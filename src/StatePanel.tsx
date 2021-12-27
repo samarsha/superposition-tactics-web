@@ -8,8 +8,14 @@ type StatePanelProps = {
 function imageNameFromEntry(name: string, state: AnimalState): string {
   if (name.startsWith("Cat")) {
     switch (state) {
-      case AnimalState.Asleep: return "cat_dead.png";
-      case AnimalState.Awake: return "cat_alive.png";
+      case AnimalState.Asleep: return "cat_asleep.png";
+      case AnimalState.Awake: return "cat_awake.png";
+    }
+  } else if (name.startsWith("Dog")) {
+    switch (state) {
+      case AnimalState.Asleep: return "dog_asleep.png";
+      case AnimalState.Awake: return "dog_awake.png";
+      case AnimalState.Random: return "dog_random.png";
     }
   }
   return "logo192.png";
@@ -28,9 +34,9 @@ function StatePanel({ animals }: StatePanelProps) {
         {Array.from(animals.entries()).map(e => {
           return <tr className="animal-display">
             <td className="animal-state">
-              {AnimalState[e[1].startingState]}
-              {/* <img className="state-image" src={imageNameFromEntry(e[1].name, e[1].startingState)}>
-              </img> */}
+              {/* {AnimalState[e[1].startingState]} */}
+              <img className="state-image" src={imageNameFromEntry(e[1].name, e[1].startingState)}>
+              </img>
             </td>
             <td className="animal-name">
               {e[1].name}
