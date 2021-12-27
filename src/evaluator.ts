@@ -1,11 +1,16 @@
 import { Command, processCommand, Gate } from "./quantum";
 import { AnimalState, LevelDefinition } from "./levelDefs";
 
-enum EvaluationResult { None, Failure, Success, Error }
+type EvaluationResult =
+    { kind: "none" }
+    | { kind: "success" }
+    | { kind: "failure", trial: number }
+    | { kind: "error", message: string }
 
 function evaluate(levelDef: LevelDefinition, commands: Command[]): EvaluationResult {
     commands = Array.prototype.concat(levelDef.dogInitialCommands, commands, levelDef.dogFinalCommands);
-    if (commands.some(c => c.attacker == c.target)) return EvaluationResult.Error;
+    if (commands.some(c => c.attacker == c.target))
+        return { kind: "error", message: "Cannot command a cat to shoot itself" };
 
     let freeVars = Array.from(levelDef.animals.entries())
         .filter(e => e[1].startingState == AnimalState.Random)
@@ -16,10 +21,7 @@ function evaluate(levelDef: LevelDefinition, commands: Command[]): EvaluationRes
             if (e[1].startingState == AnimalState.Random) return [e[0], assignment.get(e[0]) as boolean];
             return [e[0], e[1].startingState == AnimalState.Awake];
         }));
-        let quantumState = [{
-            amplitude: 1,
-            awake: awake,
-        }];
+        let quantumState = [{ amplitude: 1, awake }];
         for (var command of commands) {
             let gate = levelDef.animals.get(command.attacker)?.gate as Gate;
             quantumState = processCommand(gate, command, quantumState);
@@ -27,10 +29,11 @@ function evaluate(levelDef: LevelDefinition, commands: Command[]): EvaluationRes
         if (quantumState.some(u => Array.from(u.awake.entries()).some(e => {
             return levelDef.animals.get(e[0])?.name.startsWith("Cat") && !e[1]
         }))) {
-            return EvaluationResult.Failure;
+            return { kind: "failure", trial };
         }
     }
-    return EvaluationResult.Success;
+    return { kind: "success" };
 }
 
-export { EvaluationResult, evaluate }
+export type { EvaluationResult }
+export { evaluate }

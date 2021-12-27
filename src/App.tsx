@@ -8,12 +8,12 @@ import { evaluate, EvaluationResult } from './evaluator';
 export default function () {
   const [level, setLevel] = useState(levels[0]);
   const [commands, setCommands] = useState(level.referenceSolution);
-  const [evalResult, setEvalResult] = useState(EvaluationResult.None);
+  const [evalResult, setEvalResult] = useState<EvaluationResult>({ kind: "none" });
 
   function onLevelChange(l: LevelDefinition): void {
     setLevel(l);
     setCommands(l.referenceSolution);
-    setEvalResult(EvaluationResult.None);
+    setEvalResult({ kind: "none" });
 
   }
 
@@ -33,15 +33,15 @@ export default function () {
           commands={commands}
           onAdd={() => {
             setCommands([...commands, { attacker: 0, target: 1 }]);
-            setEvalResult(EvaluationResult.None)
+            setEvalResult({ kind: "none" })
           }}
           onChange={(command, index) => {
             setCommands(commands.map((c, i) => i === index ? command : c));
-            setEvalResult(EvaluationResult.None)
+            setEvalResult({ kind: "none" })
           }}
           onRemove={index => {
             setCommands(commands.filter((_, i) => i !== index));
-            setEvalResult(EvaluationResult.None)
+            setEvalResult({ kind: "none" })
           }}
         />
       </div>
@@ -61,14 +61,25 @@ function levelSelector(level: LevelDefinition, evalResult: EvaluationResult, onC
     }
   }
 
+  let evalItem = <span></span>
+  switch (evalResult.kind) {
+    case "success": evalItem = <span>Result: Success!</span>; break
+    case "failure": evalItem = <span>Result: Failed on trial {evalResult.trial}</span>; break
+    case "error": evalItem = <span>Error: {evalResult.message}</span>; break
+  }
+
   return (
     <div className="top-bar">
-      Current Level:
-      <select value={level.levelName} onChange={onSelectChange}>
-        {items}
-      </select>
-      <button onClick={onEvaluate}>Evaluate</button>
-      Result: {EvaluationResult[evalResult]}
+      <div>
+        Current Level:
+        <select value={level.levelName} onChange={onSelectChange}>
+          {items}
+        </select>
+      </div>
+      <div>
+        <button onClick={onEvaluate}>Evaluate</button>
+        {evalItem}
+      </div>
     </div>
   );
 }
