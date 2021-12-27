@@ -1,5 +1,3 @@
-export { }
-
 type AnimalID = number;
 
 enum Gate { CX, CZ, CH }
@@ -101,3 +99,5 @@ function processCommand(animalDefs: AnimalDefs, command: Command, quantumState: 
         }
     }));
 }
+
+export type { AnimalID, Command };
