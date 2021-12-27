@@ -1,11 +1,11 @@
 import { Dict, Gate, Command } from "./quantum";
 
-enum AnimalStartingState { Asleep, Awake, Random };
+enum AnimalState { Asleep, Awake, Random };
 
 type AnimalDefs = Dict<{
     name: string,
     gate: Gate,
-    startingState: AnimalStartingState,
+    startingState: AnimalState,
 }>;
 
 type LevelDefinition = {
@@ -26,7 +26,7 @@ function parseAnimalDefs(input: String): AnimalDefs {
         }
         let subparts2 = subparts1[0].split(" starts ");
         let name = subparts2[0];
-        let startingState = AnimalStartingState[subparts2[1] as keyof typeof AnimalStartingState];
+        let startingState = AnimalState[subparts2[1] as keyof typeof AnimalState];
         return [i, {
             name: name,
             gate: gate,
@@ -36,6 +36,7 @@ function parseAnimalDefs(input: String): AnimalDefs {
 }
 
 function parseCommands(animals: AnimalDefs, input: string): Command[] {
+    if (input === undefined) return [];
     let parts = input.split("\n");
     return parts.map(part => {
         let subparts = part.split(" shoots ");
@@ -43,8 +44,8 @@ function parseCommands(animals: AnimalDefs, input: string): Command[] {
         let target = subparts[1];
 
         let animalIds = Array.from(animals.entries());
-        let atk = animalIds.find(e => e[1].name == attacker)?.[0] as number;
-        let tar = animalIds.find(e => e[1].name == target)?.[0] as number;
+        let atk = animalIds.find(e => e[1].name === attacker)?.[0] as number;
+        let tar = animalIds.find(e => e[1].name === target)?.[0] as number;
         return {
             attacker: atk,
             target: tar,
@@ -74,10 +75,10 @@ function parseLevel(input: string): LevelDefinition {
 let level0: LevelDefinition = {
     levelName: "SWAP",
     animals: new Map([
-        [0, { name: "Cat A", gate: Gate.CX, startingState: AnimalStartingState.Awake }],
-        [1, { name: "Cat B", gate: Gate.CX, startingState: AnimalStartingState.Awake }],
-        [2, { name: "Dog A", gate: Gate.CX, startingState: AnimalStartingState.Random }],
-        [3, { name: "Dog B", gate: Gate.CX, startingState: AnimalStartingState.Random }],
+        [0, { name: "Cat A", gate: Gate.CX, startingState: AnimalState.Awake }],
+        [1, { name: "Cat B", gate: Gate.CX, startingState: AnimalState.Awake }],
+        [2, { name: "Dog A", gate: Gate.CX, startingState: AnimalState.Random }],
+        [3, { name: "Dog B", gate: Gate.CX, startingState: AnimalState.Random }],
     ]),
     dogInitialCommands: [
         { attacker: 2, target: 0 },
@@ -96,9 +97,9 @@ let level0: LevelDefinition = {
 
 let level1 = parseLevel(`Level 1
 ---
-Cat A starts awake, carries a CH
-Cat B starts awake
-Dog A starts random
+Cat A starts Awake, carries a CH
+Cat B starts Awake
+Dog A starts Random
 ---
 Dog A shoots Cat B
 [your orders]
@@ -109,3 +110,6 @@ Cat B shoots Dog A
 Cat A shoots Cat B
 Cat A shoots Dog A
 `);
+
+export type { AnimalDefs }
+export { level1, AnimalState }

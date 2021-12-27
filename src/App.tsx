@@ -1,5 +1,7 @@
 import './App.css';
 import { CommandPanel } from './CommandPanel';
+import { StatePanel } from './StatePanel';
+import { level1 } from './levelDefs';
 
 function App() {
   const roster = { cats: [1, 2, 3], dogs: [4, 5, 6] };
@@ -14,6 +16,7 @@ function App() {
 
   return (
     <div className="App">
+      <StatePanel animals={level1.animals} />
       <CommandPanel roster={roster} preamble={preamble} commands={commands} postamble={postamble} />
     </div>
   );
