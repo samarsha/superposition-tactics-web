@@ -2,11 +2,11 @@ type AnimalID = number;
 
 enum Gate { CX, CZ, CH }
 
-type Dict<T> = Map<AnimalID, T>;
+type AnimalMap<T> = Map<AnimalID, T>;
 
 type Universe = {
     readonly amplitude: number;
-    readonly awake: Dict<boolean>;
+    readonly awake: AnimalMap<boolean>;
 }
 
 type QuantumState = Universe[];
@@ -16,7 +16,7 @@ type Command = {
     readonly target: AnimalID;
 }
 
-function dictSet<T>(dict: Dict<T>, animal: AnimalID, t: T) {
+function dictSet<T>(dict: AnimalMap<T>, animal: AnimalID, t: T) {
     let dict2 = new Map(dict);
     dict2.set(animal, t);
     return dict2;
@@ -97,5 +97,5 @@ function processCommand(gate: Gate, command: Command, quantumState: QuantumState
     }));
 }
 
-export type { AnimalID, Dict, Universe, QuantumState, Command };
+export type { AnimalID, AnimalMap, Universe, QuantumState, Command };
 export { Gate, dictSet, processCommand };

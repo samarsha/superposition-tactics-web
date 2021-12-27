@@ -1,8 +1,8 @@
-import { Dict, Gate, Command } from "./quantum";
+import { AnimalMap, Gate, Command } from "./quantum";
 
 enum AnimalState { Asleep, Awake, Random };
 
-type AnimalDefs = Dict<{
+type AnimalDefs = AnimalMap<{
     name: string,
     gate: Gate,
     startingState: AnimalState,
