@@ -2,23 +2,28 @@ import { useEffect, useState } from 'react';
 import './App.scss';
 import { CommandPanel } from './CommandPanel';
 import { StatePanel } from './StatePanel';
+import { Command } from './quantum';
 import { levels, LevelDefinition } from './levelDefs';
 import { step, startEvaluation, noEvaluation, EvaluationState } from './evaluator';
 
 export default function () {
   const [level, setLevel] = useState(levels[0]);
-  const [commands, setCommands] = useState(level.referenceSolution);
+  const [commands, setCommands] = useState<Command[]>([]);
   const [evalState, setEvalState] = useState(noEvaluation);
 
   function onLevelChange(l: LevelDefinition): void {
     setLevel(l);
-    setCommands(l.referenceSolution);
+    setCommands([]);
     setEvalState(noEvaluation);
   }
 
   function onEvaluate(): void {
-    // setEvalState(evaluate(level, commands));
     setEvalState(startEvaluation(level, commands));
+  }
+
+  function onSeeAnswer(): void {
+    setCommands(level.referenceSolution);
+    setEvalState(noEvaluation);
   }
 
   useEffect(() => {
@@ -32,7 +37,7 @@ export default function () {
 
   return (
     <div className="App">
-      {levelSelector(level, evalState, onLevelChange, onEvaluate)}
+      {levelSelector(level, evalState, onLevelChange, onEvaluate, onSeeAnswer)}
 
       <div className="main-panel">
         <StatePanel
@@ -62,7 +67,7 @@ export default function () {
   );
 }
 
-function levelSelector(level: LevelDefinition, evalState: EvaluationState, onChange: (level: LevelDefinition) => void, onEvaluate: () => void) {
+function levelSelector(level: LevelDefinition, evalState: EvaluationState, onChange: (level: LevelDefinition) => void, onEvaluate: () => void, onSeeAnswer: () => void) {
   const items = levels.map(l => <option value={l.levelName}>{l.levelName}</option>);
 
   function onSelectChange(e: React.ChangeEvent<HTMLSelectElement>): void {
@@ -77,13 +82,13 @@ function levelSelector(level: LevelDefinition, evalState: EvaluationState, onCha
   let evalItem = <span></span>
   switch (evalState.kind) {
     case "success": evalItem = <span>Result: Success!</span>; break
-    case "failure": evalItem = <span>Result: Failed on trial {evalState.trial}</span>; break
+    case "failure": evalItem = <span>Result: Failed on trial {evalState.trial + 1}</span>; break
     case "error": evalItem = <span>Error: {evalState.message}</span>; break
     case "calculating":
       if (evalState.data.trialData === undefined)
-        evalItem = <span>Calculating... trial {evalState.data.trial}</span>;
+        evalItem = <span>Calculating... trial {evalState.data.trial + 1}</span>;
       else
-        evalItem = <span>Calculating... trial {evalState.data.trial}, step {evalState.data.trialData.commandsProcessed}</span>;
+        evalItem = <span>Calculating... trial {evalState.data.trial + 1}, step {evalState.data.trialData.commandsProcessed}</span>;
       break;
   }
 
@@ -98,6 +103,9 @@ function levelSelector(level: LevelDefinition, evalState: EvaluationState, onCha
       <div>
         <button onClick={onEvaluate}>Evaluate</button>
         {evalItem}
+      </div>
+      <div>
+        <button onClick={onSeeAnswer}>See Answer</button>
       </div>
     </div>
   );
