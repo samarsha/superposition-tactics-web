@@ -111,5 +111,5 @@ Cat A shoots Cat B
 Cat A shoots Dog A
 `);
 
-export type { AnimalDefs }
+export type { AnimalDefs, LevelDefinition }
 export { level1, AnimalState }
