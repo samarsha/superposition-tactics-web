@@ -10,16 +10,19 @@ type CommandPanelProps = {
   preamble: Command[];
   commands: Command[];
   postamble: Command[];
+  onAdd?: () => void;
+  onChange?: (command: Command, index: number) => void;
+  onRemove?: (index: number) => void;
 }
 
-function CommandPanel({ roster, preamble, commands, postamble }: CommandPanelProps) {
+function CommandPanel({ roster, preamble, commands, postamble, onAdd, onChange, onRemove }: CommandPanelProps) {
   const preambleItems = preamble.map(c => <li>{commandItem(roster, c)}</li>);
   const postambleItems = postamble.map(c => <li>{commandItem(roster, c)}</li>);
 
   return (
     <div className="command-panel">
       <ol>{preambleItems}</ol>
-      {commandEditor(roster, commands)}
+      {commandEditor(roster, commands, onAdd, onChange, onRemove)}
       <ol>{postambleItems}</ol>
     </div>
   );
@@ -28,28 +31,58 @@ function CommandPanel({ roster, preamble, commands, postamble }: CommandPanelPro
 function commandItem(roster: Roster, command: Command): JSX.Element {
   const attacker = showAnimal(roster, command.attacker);
   const target = showAnimal(roster, command.target);
-  return <>{attacker} shoots {target}</>;
+  return <span className="command-item">{attacker} shoots {target}</span>;
 }
 
-function commandEditor(roster: Roster, commands: Command[]): JSX.Element {
-  const commandItems = commands.map(c => <li>{editableCommandItem(roster, c)}</li>);
-  return <ol>{commandItems}</ol>;
-}
-
-function editableCommandItem(roster: Roster, command: Command): JSX.Element {
-  const attackers = animalSelector(roster, roster.cats, command.attacker);
-  const targets = animalSelector(roster, roster.dogs, command.target);
-  return <>{attackers} shoots {targets}</>;
-}
-
-function animalSelector(roster: Roster, options: AnimalID[], selected: AnimalID): JSX.Element {
-  const items = options.map(id =>
-    id === selected
-      ? <option selected>{showAnimal(roster, id)}</option>
-      : <option>{showAnimal(roster, id)}</option>
+function commandEditor(
+  roster: Roster,
+  commands: Command[],
+  onAdd?: () => void,
+  onChange?: (command: Command, index: number) => void,
+  onRemove?: (index: number) => void,
+): JSX.Element {
+  const commandItems = commands.map((c, i) =>
+    <li>{editableCommandItem(roster, c, c => onChange?.(c, i), () => onRemove?.(i))}</li>
   );
 
-  return <select>{items}</select>;
+  return (
+    <div className="command-editor">
+      <ol>{commandItems}</ol>
+      <button onClick={onAdd}>+ Add</button>
+    </div>
+  );
+}
+
+function editableCommandItem(
+  roster: Roster,
+  command: Command,
+  onChange: (command: Command) => void,
+  onRemove: () => void,
+): JSX.Element {
+  const attackers = animalSelector(roster, roster.cats, command.attacker, id => onChange({ ...command, attacker: id }));
+  const targets = animalSelector(roster, roster.dogs, command.target, id => onChange({ ...command, target: id }));
+
+  return (
+    <span className="command-item">
+      {attackers} shoots {targets}
+      <button onClick={onRemove}>✖</button>
+    </span>
+  );
+}
+
+function animalSelector(
+  roster: Roster,
+  options: AnimalID[],
+  selected: AnimalID,
+  onChange: (id: number) => void,
+): JSX.Element {
+  const items = options.map(id => <option value={id}>{showAnimal(roster, id)}</option>);
+
+  return (
+    <select value={selected} onChange={e => onChange(Number(e.target.value))}>
+      {items}
+    </select>
+  );
 }
 
 function showAnimal(roster: Roster, id: AnimalID): string {

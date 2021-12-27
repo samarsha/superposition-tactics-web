@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import './App.css';
 import { CommandPanel } from './CommandPanel';
 import { StatePanel } from './StatePanel';
@@ -11,13 +12,21 @@ function App() {
     { attacker: 4, target: 1 }
   ];
 
-  const commands = [{ attacker: 1, target: 4 }];
+  const [commands, setCommands] = useState([{ attacker: 1, target: 4 }]);
   const postamble = [{ attacker: 1, target: 4 }];
 
   return (
     <div className="App">
       <StatePanel animals={level1.animals} />
-      <CommandPanel roster={roster} preamble={preamble} commands={commands} postamble={postamble} />
+      <CommandPanel
+        roster={roster}
+        preamble={preamble}
+        commands={commands}
+        postamble={postamble}
+        onAdd={() => setCommands([...commands, { attacker: 1, target: 4 }])}
+        onChange={(command, index) => setCommands(commands.map((c, i) => i === index ? command : c))}
+        onRemove={index => setCommands(commands.filter((_, i) => i !== index))}
+      />
     </div>
   );
 }
