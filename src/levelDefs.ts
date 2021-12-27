@@ -41,18 +41,19 @@ function parseAnimalDefs(input: String): AnimalDefs {
 function parseCommands(animals: AnimalDefs, input: string): Command[] {
     if (input === undefined) return [];
     let parts = input.split("\n");
-    return parts.map(part => {
+    return parts.flatMap(part => {
         let subparts = part.split(" shoots ");
+        if (subparts.length != 2) return [];
         let attacker = subparts[0];
         let target = subparts[1];
 
         let animalIds = Array.from(animals.entries());
         let atk = animalIds.find(e => e[1].name === attacker)?.[0] as number;
         let tar = animalIds.find(e => e[1].name === target)?.[0] as number;
-        return {
+        return [{
             attacker: atk,
             target: tar,
-        }
+        }]
     });
 }
 
@@ -61,7 +62,7 @@ function parseLevel(input: string): LevelDefinition {
     let levelName = parts[0];
     let animals = parseAnimalDefs(parts[1]);
 
-    let orderParts = parts[2].split("\n[your orders]\n");
+    let orderParts = parts[2].split("[your orders]");
     let initialOrders = parseCommands(animals, orderParts[0]);
     let finalOrders = parseCommands(animals, orderParts[1]);
     let solution = parseCommands(animals, parts[3]);

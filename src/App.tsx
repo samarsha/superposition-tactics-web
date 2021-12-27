@@ -6,16 +6,7 @@ import { levels, LevelDefinition } from './levelDefs';
 
 export default function () {
   const [level, setLevel] = useState(levels[0]);
-
-  const roster = { cats: [1, 2, 3], dogs: [4, 5, 6] };
-
-  const preamble = [
-    { attacker: 4, target: 1 },
-    { attacker: 4, target: 1 }
-  ];
-
   const [commands, setCommands] = useState(level.referenceSolution);
-  const postamble = [{ attacker: 1, target: 4 }];
 
   function onLevelChange(l: LevelDefinition): void {
     setLevel(l);
@@ -26,17 +17,17 @@ export default function () {
     <div className="App">
       {levelSelector(level, onLevelChange)}
 
-      <StatePanel animals={level.animals} />
+      <div className="main-panel">
+        <StatePanel animals={level.animals} />
 
-      <CommandPanel
-        roster={roster}
-        preamble={preamble}
-        commands={commands}
-        postamble={postamble}
-        onAdd={() => setCommands([...commands, { attacker: 1, target: 4 }])}
-        onChange={(command, index) => setCommands(commands.map((c, i) => i === index ? command : c))}
-        onRemove={index => setCommands(commands.filter((_, i) => i !== index))}
-      />
+        <CommandPanel
+          level={level}
+          commands={commands}
+          onAdd={() => setCommands([...commands, { attacker: 1, target: 4 }])}
+          onChange={(command, index) => setCommands(commands.map((c, i) => i === index ? command : c))}
+          onRemove={index => setCommands(commands.filter((_, i) => i !== index))}
+        />
+      </div>
     </div>
   );
 }
@@ -55,6 +46,7 @@ function levelSelector(level: LevelDefinition, onChange: (level: LevelDefinition
 
   return (
     <div className="level">
+      Current Level:
       <select value={level.levelName} onChange={onSelectChange}>
         {items}
       </select>
