@@ -43,6 +43,7 @@ export default function () {
         <CommandPanel
           level={level}
           commands={commands}
+          evalData={evalState.kind === "calculating" ? evalState.data : undefined}
           onAdd={() => {
             setCommands([...commands, { attacker: 0, target: 1 }]);
             setEvalState(noEvaluation);

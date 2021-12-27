@@ -1,23 +1,33 @@
 import { LevelDefinition } from "./levelDefs";
 import { AnimalID, Command } from "./quantum";
+import { EvaluationData } from "./evaluator";
 
 type CommandPanelProps = {
   level: LevelDefinition;
   commands: Command[];
+  evalData?: EvaluationData,
   onAdd?: () => void;
   onChange?: (command: Command, index: number) => void;
   onRemove?: (index: number) => void;
 }
 
-function CommandPanel({ level, commands, onAdd, onChange, onRemove }: CommandPanelProps) {
-  const preambleItems = level.dogInitialCommands.map(c => <li>{commandItem(level, c)}</li>);
-  const postambleItems = level.dogFinalCommands.map(c => <li>{commandItem(level, c)}</li>);
+function CommandPanel({ level, commands, evalData, onAdd, onChange, onRemove }: CommandPanelProps) {
+  const preambleItems = level.dogInitialCommands.map((c, i) => <li
+    className={evalData?.trialData !== undefined
+      && evalData.trialData.commandsProcessed == i
+      ? "selected-command-item" : ""}
+  >{commandItem(level, c)}</li>);
+  const postambleItems = level.dogFinalCommands.map((c, i) => <li
+    className={evalData?.trialData !== undefined
+      && evalData.trialData.commandsProcessed == i + level.dogInitialCommands.length + commands.length
+      ? "selected-command-item" : ""}
+  >{commandItem(level, c)}</li>);
 
   return (
     <div className="command-panel">
       <h2>Commands</h2>
       <ol className="enemy-commands">{preambleItems}</ol>
-      {commandEditor(level, commands, onAdd, onChange, onRemove)}
+      {commandEditor(level, commands, evalData, onAdd, onChange, onRemove)}
       <ol className="enemy-commands">{postambleItems}</ol>
     </div>
   );
@@ -32,12 +42,18 @@ function commandItem(level: LevelDefinition, command: Command): JSX.Element {
 function commandEditor(
   level: LevelDefinition,
   commands: Command[],
+  evalData?: EvaluationData,
   onAdd?: () => void,
   onChange?: (command: Command, index: number) => void,
   onRemove?: (index: number) => void,
 ): JSX.Element {
   const commandItems = commands.map((c, i) =>
-    <li>{editableCommandItem(level, c, c => onChange?.(c, i), () => onRemove?.(i))}</li>
+    <li
+      className={evalData?.trialData !== undefined
+        && evalData.trialData.commandsProcessed == i + level.dogInitialCommands.length
+        ? "selected-command-item" : ""}
+    >{editableCommandItem(level, c,
+      c => onChange?.(c, i), () => onRemove?.(i))}</li>
   );
 
   return (
