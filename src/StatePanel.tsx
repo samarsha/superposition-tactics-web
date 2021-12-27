@@ -5,6 +5,16 @@ type StatePanelProps = {
   animals: AnimalDefs,
 }
 
+function imageNameFromEntry(name: string, state: AnimalState): string {
+  if (name.startsWith("Cat")) {
+    switch (state) {
+      case AnimalState.Asleep: return "cat_dead.png";
+      case AnimalState.Awake: return "cat_alive.png";
+    }
+  }
+  return "logo192.png";
+}
+
 function StatePanel({ animals }: StatePanelProps) {
   return (
     <div className="state-panel">
@@ -19,6 +29,8 @@ function StatePanel({ animals }: StatePanelProps) {
           return <tr className="animal-display">
             <td className="animal-state">
               {AnimalState[e[1].startingState]}
+              {/* <img className="state-image" src={imageNameFromEntry(e[1].name, e[1].startingState)}>
+              </img> */}
             </td>
             <td className="animal-name">
               {e[1].name}

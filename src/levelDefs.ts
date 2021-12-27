@@ -43,7 +43,7 @@ function parseCommands(animals: AnimalDefs, input: string): Command[] {
     let parts = input.split("\n");
     return parts.flatMap(part => {
         let subparts = part.split(" shoots ");
-        if (subparts.length != 2) return [];
+        if (subparts.length !== 2) return [];
         let attacker = subparts[0];
         let target = subparts[1];
 

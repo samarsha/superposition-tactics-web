@@ -52,11 +52,16 @@
 .state-panel {
   padding: 0 16px;
   flex-grow: 1;
+  border-right: 1px solid black;
   table {
     width: 100%;
   }
-  border-right: 1px solid black;
+  .state-image {
+    width: 32px;
+    height: 32px;
+  }
 }
+
 .command-panel {
   padding: 0 16px;
   flex-grow: 1;
