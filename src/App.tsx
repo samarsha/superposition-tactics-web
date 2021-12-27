@@ -1,47 +1,59 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.scss';
 import { CommandPanel } from './CommandPanel';
 import { StatePanel } from './StatePanel';
 import { levels, LevelDefinition } from './levelDefs';
-import { evaluate, EvaluationResult } from './evaluator';
+import { step, startEvaluation, noEvaluation, EvaluationState } from './evaluator';
 
 export default function () {
   const [level, setLevel] = useState(levels[0]);
   const [commands, setCommands] = useState(level.referenceSolution);
-  const [evalResult, setEvalResult] = useState<EvaluationResult>({ kind: "none" });
+  const [evalState, setEvalState] = useState(noEvaluation);
 
   function onLevelChange(l: LevelDefinition): void {
     setLevel(l);
     setCommands(l.referenceSolution);
-    setEvalResult({ kind: "none" });
-
+    setEvalState(noEvaluation);
   }
 
   function onEvaluate(): void {
-    setEvalResult(evaluate(level, commands));
+    // setEvalState(evaluate(level, commands));
+    setEvalState(startEvaluation(level, commands));
   }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (evalState.kind === "calculating") {
+        setEvalState(step(level, commands, evalState.data));
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  })
 
   return (
     <div className="App">
-      {levelSelector(level, evalResult, onLevelChange, onEvaluate)}
+      {levelSelector(level, evalState, onLevelChange, onEvaluate)}
 
       <div className="main-panel">
-        <StatePanel animals={level.animals} />
+        <StatePanel
+          animals={level.animals}
+          evalData={evalState.kind === "calculating" ? evalState.data : undefined}
+        />
 
         <CommandPanel
           level={level}
           commands={commands}
           onAdd={() => {
             setCommands([...commands, { attacker: 0, target: 1 }]);
-            setEvalResult({ kind: "none" })
+            setEvalState(noEvaluation);
           }}
           onChange={(command, index) => {
             setCommands(commands.map((c, i) => i === index ? command : c));
-            setEvalResult({ kind: "none" })
+            setEvalState(noEvaluation);
           }}
           onRemove={index => {
             setCommands(commands.filter((_, i) => i !== index));
-            setEvalResult({ kind: "none" })
+            setEvalState(noEvaluation);
           }}
         />
       </div>
@@ -49,7 +61,7 @@ export default function () {
   );
 }
 
-function levelSelector(level: LevelDefinition, evalResult: EvaluationResult, onChange: (level: LevelDefinition) => void, onEvaluate: () => void) {
+function levelSelector(level: LevelDefinition, evalState: EvaluationState, onChange: (level: LevelDefinition) => void, onEvaluate: () => void) {
   const items = levels.map(l => <option value={l.levelName}>{l.levelName}</option>);
 
   function onSelectChange(e: React.ChangeEvent<HTMLSelectElement>): void {
@@ -62,10 +74,16 @@ function levelSelector(level: LevelDefinition, evalResult: EvaluationResult, onC
   }
 
   let evalItem = <span></span>
-  switch (evalResult.kind) {
+  switch (evalState.kind) {
     case "success": evalItem = <span>Result: Success!</span>; break
-    case "failure": evalItem = <span>Result: Failed on trial {evalResult.trial}</span>; break
-    case "error": evalItem = <span>Error: {evalResult.message}</span>; break
+    case "failure": evalItem = <span>Result: Failed on trial {evalState.trial}</span>; break
+    case "error": evalItem = <span>Error: {evalState.message}</span>; break
+    case "calculating":
+      if (evalState.data.trialData === undefined)
+        evalItem = <span>Calculating... trial {evalState.data.trial}</span>;
+      else
+        evalItem = <span>Calculating... trial {evalState.data.trial}, step {evalState.data.trialData.commandsProcessed}</span>;
+      break;
   }
 
   return (
