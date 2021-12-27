@@ -24,7 +24,7 @@ function StatePanel({ animals }: StatePanelProps) {
               {e[1].name}
             </td>
             <td className="animal-gate">
-              {Gate[e[1].gate]}
+              {Gate[e[1].gate].slice(1)}
             </td>
           </tr>
         })}
