@@ -21,7 +21,7 @@ const noEvaluation: EvaluationState = { kind: "none" }
 
 function startEvaluation(levelDef: LevelDefinition, commands: Command[]): EvaluationState {
     commands = Array.prototype.concat(levelDef.dogInitialCommands, commands, levelDef.dogFinalCommands);
-    if (commands.some(c => c.attacker == c.target))
+    if (commands.some(c => c.attacker === c.target))
         return { kind: "error", message: "Cannot command a cat to shoot itself" };
     if (commands.some(c => levelDef.bannedCommands.some(c2 =>
         c.attacker === c2.attacker && c.target === c2.target)))
@@ -33,15 +33,15 @@ function startEvaluation(levelDef: LevelDefinition, commands: Command[]): Evalua
 function step(levelDef: LevelDefinition, commands: Command[], evalData: EvaluationData): EvaluationState {
 
     let freeVars = Array.from(levelDef.animals.entries())
-        .filter(e => e[1].startingState == AnimalState.Random)
+        .filter(e => e[1].startingState === AnimalState.Random)
         .map(e => e[0]);
 
     // Start a new trial
     if (evalData.trialData === undefined) {
         let assignment = new Map(freeVars.map((v, i) => [v, Math.floor(evalData.trial / 2 ** i) % 2 === 1]));
         let initialAwake = new Map(Array.from(levelDef.animals.entries()).map(e => {
-            if (e[1].startingState == AnimalState.Random) return [e[0], assignment.get(e[0]) as boolean];
-            return [e[0], e[1].startingState == AnimalState.Awake];
+            if (e[1].startingState === AnimalState.Random) return [e[0], assignment.get(e[0]) as boolean];
+            return [e[0], e[1].startingState === AnimalState.Awake];
         }));
         let quantumState = [{ amplitude: 1, awake: initialAwake }];
         return {

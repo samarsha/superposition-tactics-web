@@ -14,12 +14,12 @@ type CommandPanelProps = {
 function CommandPanel({ level, commands, evalData, onAdd, onChange, onRemove }: CommandPanelProps) {
   const preambleItems = level.dogInitialCommands.map((c, i) => <li
     className={evalData?.trialData !== undefined
-      && evalData.trialData.commandsProcessed == i
+      && evalData.trialData.commandsProcessed === i
       ? "selected-command-item" : ""}
   >{commandItem(level, c)}</li>);
   const postambleItems = level.dogFinalCommands.map((c, i) => <li
     className={evalData?.trialData !== undefined
-      && evalData.trialData.commandsProcessed == i + level.dogInitialCommands.length + commands.length
+      && evalData.trialData.commandsProcessed === i + level.dogInitialCommands.length + commands.length
       ? "selected-command-item" : ""}
   >{commandItem(level, c)}</li>);
 
@@ -50,7 +50,7 @@ function commandEditor(
   const commandItems = commands.map((c, i) =>
     <li
       className={evalData?.trialData !== undefined
-        && evalData.trialData.commandsProcessed == i + level.dogInitialCommands.length
+        && evalData.trialData.commandsProcessed === i + level.dogInitialCommands.length
         ? "selected-command-item" : ""}
     >{editableCommandItem(level, c,
       c => onChange?.(c, i), () => onRemove?.(i))}</li>
