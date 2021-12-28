@@ -10,6 +10,7 @@ export default function () {
   const [level, setLevel] = useState(levels[0]);
   const [commands, setCommands] = useState<Command[]>([]);
   const [evalState, setEvalState] = useState(noEvaluation);
+  const [updateSpeed, setUpdateSpeed] = useState(1);
 
   function onLevelChange(l: LevelDefinition): void {
     setLevel(l);
@@ -21,23 +22,35 @@ export default function () {
     setEvalState(startEvaluation(level, commands));
   }
 
+  function onDoOneStep(): void {
+    if (evalState.kind === "calculating") {
+      setEvalState(step(level, commands, evalState.data));
+    }
+  }
+
   function onSeeAnswer(): void {
     setCommands(level.referenceSolution);
     setEvalState(noEvaluation);
   }
 
+  function onUpdateSpeedChange(event: React.ChangeEvent<HTMLInputElement>): void {
+    setUpdateSpeed(Number(event.target.value));
+  }
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (evalState.kind === "calculating") {
-        setEvalState(step(level, commands, evalState.data));
-      }
-    }, 1000);
-    return () => clearInterval(interval);
+    if (updateSpeed !== 0) {
+      const timeout = setTimeout(() => {
+        if (evalState.kind === "calculating") {
+          setEvalState(step(level, commands, evalState.data));
+        }
+      }, 1000 / updateSpeed);
+      return () => clearTimeout(timeout);
+    }
   })
 
   return (
     <div className="App">
-      {levelSelector(level, evalState, onLevelChange, onEvaluate, onSeeAnswer)}
+      {levelSelector(level, evalState, updateSpeed, onLevelChange, onEvaluate, onDoOneStep, onSeeAnswer, onUpdateSpeedChange)}
 
       <div className="main-panel">
         <StatePanel
@@ -67,7 +80,16 @@ export default function () {
   );
 }
 
-function levelSelector(level: LevelDefinition, evalState: EvaluationState, onChange: (level: LevelDefinition) => void, onEvaluate: () => void, onSeeAnswer: () => void) {
+function levelSelector(
+  level: LevelDefinition,
+  evalState: EvaluationState,
+  updateSpeed: number,
+  onChange: (level: LevelDefinition) => void,
+  onEvaluate: () => void,
+  onDoOneStep: () => void,
+  onSeeAnswer: () => void,
+  onUpdateSpeedChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
+) {
   const items = levels.map(l => <option value={l.levelName}>{l.levelName}</option>);
 
   function onSelectChange(e: React.ChangeEvent<HTMLSelectElement>): void {
@@ -103,6 +125,12 @@ function levelSelector(level: LevelDefinition, evalState: EvaluationState, onCha
       <div>
         <button onClick={onEvaluate}>Evaluate</button>
         {evalItem}
+      </div>
+      <div>
+        <input type="range" value={updateSpeed} min={0} max={2} onChange={onUpdateSpeedChange} step={0.1} />
+        {evalState.kind === "calculating"
+          ? <button onClick={onDoOneStep}>Step</button>
+          : undefined}
       </div>
       <div>
         <button onClick={onSeeAnswer}>See Answer</button>
