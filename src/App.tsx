@@ -127,10 +127,10 @@ function levelSelector(
         {evalItem}
       </div>
       <div>
-        <input type="range" value={updateSpeed} min={0} max={2} onChange={onUpdateSpeedChange} step={0.1} />
         {evalState.kind === "calculating"
           ? <button onClick={onDoOneStep}>Step</button>
           : undefined}
+        <input type="range" value={updateSpeed} min={0} max={2} onChange={onUpdateSpeedChange} step={0.1} />
       </div>
       <div>
         <button onClick={onSeeAnswer}>See Answer</button>
