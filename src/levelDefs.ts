@@ -187,7 +187,7 @@ Cat A starts awake, carries a CH
 Dog A starts random
 ---
 [your orders]
-Dog A shoots Cat B
+Dog A shoots Cat A
 ---
 Cat A shoots Dog A
 ===
