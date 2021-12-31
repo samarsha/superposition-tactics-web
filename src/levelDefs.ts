@@ -285,6 +285,119 @@ Cat A shoots Cat C
 Cat B shoots Cat C
 Cat C shoots Cat B
 Cat B shoots Cat C
+===
+Undo the Hadamard - again
+---
+Cat A starts awake, carries a CH
+Cat B starts awake
+Cat C starts awake
+Dog A starts awake, carries a CH
+Dog B starts random
+Banned: Cat A shoots Cat B
+---
+Dog A shoots Cat B
+Dog B shoots Cat C
+[your orders]
+Dog B shoots Cat C
+---
+Cat B shoots Cat C
+Cat C shoots Cat B
+Cat B shoots Cat C
+Cat A shoots Cat C
+Cat B shoots Cat C
+Cat C shoots Cat B
+Cat B shoots Cat C
+===
+Undo the Hadamard - Z
+---
+Cat A starts awake, carries a CH
+Cat B starts awake, carries a CZ
+Cat C starts awake, carries a CH
+Dog A starts awake, carries a CH
+Dog B starts random
+Banned: Cat A shoots Cat B
+---
+Dog A shoots Cat B
+Dog B shoots Cat C
+[your orders]
+Dog B shoots Cat C
+---
+Cat B shoots Cat C
+Cat C shoots Cat B
+Cat B shoots Cat C
+Cat A shoots Cat C
+Cat B shoots Cat C
+Cat C shoots Cat B
+Cat B shoots Cat C
+===
+Very Hard Level
+---
+Cat A starts awake
+Cat B starts awake, carries a CH
+Cat C starts awake, carries a CZ
+Dog A starts awake, carries a CH
+Dog B starts awake
+Banned: Cat A shoots anyone
+Banned: anyone shoots Dog A
+Banned: Cat B shoots Cat A
+---
+Dog A shoots Cat A
+[your orders]
+Dog B shoots Cat A
+---
+Cat B shoots Cat C
+Cat C shoots Cat A
+Cat B shoots Cat C
+Cat B shoots Dog B
+Cat C shoots Dog B
+Cat B shoots Dog B
+Cat B shoots Cat C
+Cat C shoots Cat A
+Cat B shoots Cat C
+Cat B shoots Dog B
+Cat C shoots Dog B
+Cat B shoots Dog B
+Cat C shoots Cat A
+===
+Even Harder Level
+---
+Cat A starts awake
+Cat B starts awake, carries a CH
+Cat C starts awake, carries a CZ
+Dog A starts awake, carries a CH
+Dog B starts random
+Banned: Cat A shoots anyone
+Banned: Cat B shoots Cat A
+---
+Dog A shoots Cat A
+[your orders]
+Dog B shoots Cat A
+---
+Cat B shoots Cat C
+Cat C shoots Dog B
+Cat B shoots Cat C
+Cat B shoots Dog B
+Cat C shoots Dog B
+Cat B shoots Dog B
+Cat B shoots Dog A
+Cat C shoots Dog A
+Cat B shoots Dog A
+Cat B shoots Cat C
+Cat C shoots Dog A
+Cat B shoots Cat C
+Cat B shoots Cat C
+Cat C shoots Cat A
+Cat B shoots Cat C
+Cat B shoots Dog B
+Cat C shoots Dog B
+Cat B shoots Dog B
+Cat B shoots Cat C
+Cat C shoots Cat A
+Cat B shoots Cat C
+Cat B shoots Dog B
+Cat C shoots Dog B
+Cat B shoots Dog B
+Cat C shoots Cat A
 `);
 
 export type { AnimalDefs, LevelDefinition }
