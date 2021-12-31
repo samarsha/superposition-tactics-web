@@ -1,5 +1,5 @@
-import { Gate, QuantumState } from "./quantum";
-import { AnimalState, LevelDefinition } from "./levelDefs";
+import { AnimalID, Gate, QuantumState } from "./quantum";
+import { AnimalState, AnimalDefs, LevelDefinition } from "./levelDefs";
 
 type StatePanelProps = {
   levelDef: LevelDefinition,
@@ -59,12 +59,17 @@ function StatePanel({ levelDef, quantumState }: StatePanelProps) {
           <h3>Banned Commands</h3>
           {levelDef.bannedCommands.map(c =>
             <div>
-              {animals.get(c.attacker)?.name} can't shoot {animals.get(c.target)?.name}
+              {getName(animals, c.attacker)} can't shoot {getName(animals, c.target)}
             </div>
           )}
         </div>}
     </div>
   );
+}
+
+function getName(animals: AnimalDefs, id: AnimalID): string {
+  let animal = animals.get(id);
+  return animal === undefined ? "Anyone" : animal.name;
 }
 
 export type { StatePanelProps };

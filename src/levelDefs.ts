@@ -52,8 +52,10 @@ function parseCommand(animals: AnimalDefs, input: string): Command | undefined {
     let targetStr = subparts[1];
 
     let animalIds = Array.from(animals.entries());
-    let attacker = animalIds.find(e => e[1].name === attackerStr)?.[0] as number;
-    let target = animalIds.find(e => e[1].name === targetStr)?.[0] as number;
+    let attacker = animalIds.find(e => e[1].name === attackerStr)?.[0];
+    let target = animalIds.find(e => e[1].name === targetStr)?.[0];
+    if (attacker === undefined) attacker = -1;
+    if (target === undefined) target = -1;
     return { attacker, target };
 }
 

@@ -26,6 +26,10 @@ function evaluate(levelDef: LevelDefinition, commands: Command[]): EvaluationSta
     commands = Array.prototype.concat(levelDef.dogInitialCommands, commands, levelDef.dogFinalCommands);
     if (commands.some(c => c.attacker == c.target))
         return { kind: "error", message: "Cannot command a cat to shoot itself" };
+    if (commands.some(c => levelDef.bannedCommands.some(c2 =>
+        (c.attacker === c2.attacker || c2.attacker === -1)
+        && (c.target === c2.target || c2.target === -1))))
+        return { kind: "error", message: "Command is banned in this level" };
 
     let quantumState = initialState(levelDef);
     let timeline = [quantumState];
