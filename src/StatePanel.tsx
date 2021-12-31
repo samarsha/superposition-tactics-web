@@ -6,18 +6,11 @@ type StatePanelProps = {
   quantumState: QuantumState,
 }
 
-function imageNameFromEntry(name: string, state: AnimalState): string {
+function imageNameFromEntry(name: string, awake: boolean): string {
   if (name.startsWith("Cat")) {
-    switch (state) {
-      case AnimalState.Asleep: return "cat_asleep.png";
-      case AnimalState.Awake: return "cat_awake.png";
-    }
+    return awake ? "cat_awake.png" : "cat_asleep.png";
   } else if (name.startsWith("Dog")) {
-    switch (state) {
-      case AnimalState.Asleep: return "dog_asleep.png";
-      case AnimalState.Awake: return "dog_awake.png";
-      case AnimalState.Random: return "dog_random.png";
-    }
+    return awake ? "dog_awake.png" : "dog_asleep.png";
   }
   return "logo192.png";
 }
@@ -28,30 +21,33 @@ function StatePanel({ levelDef, quantumState }: StatePanelProps) {
     <div className="state-panel">
       <h2>Current State</h2>
       <table>
-        <tr>
-          {quantumState.map(u =>
-            <th>{u.amplitude.toFixed(2)}</th>
-          )}
-          <th>Name</th>
-          <th>Gate</th>
-        </tr>
-        {Array.from(animals.entries()).map(e => {
-          return <tr className="animal-display">
+        <thead>
+          <tr>
             {quantumState.map(u =>
-              <td className="animal-state">
-                <img className="state-image" src={imageNameFromEntry(e[1].name,
-                  u.awake.get(e[0]) ? AnimalState.Awake : AnimalState.Asleep)}>
-                </img>
-              </td>
+              <th>{u.amplitude.toFixed(2)}</th>
             )}
-            <td className="animal-name">
-              {e[1].name}
-            </td>
-            <td className="animal-gate">
-              {Gate[e[1].gate].slice(1)}
-            </td>
+            <th>Name</th>
+            <th>Gate</th>
           </tr>
-        })}
+        </thead>
+        <tbody>
+          {Array.from(animals.entries()).map(e => {
+            return <tr className="animal-display">
+              {quantumState.map(u =>
+                <td className="animal-state">
+                  <img className="state-image" src={imageNameFromEntry(e[1].name, u.awake.get(e[0]) as boolean)}>
+                  </img>
+                </td>
+              )}
+              <td className="animal-name">
+                {e[1].name}
+              </td>
+              <td className="animal-gate">
+                {Gate[e[1].gate].slice(1)}
+              </td>
+            </tr>
+          })}
+        </tbody>
       </table>
       {levelDef.bannedCommands.length === 0
         ? undefined
@@ -59,17 +55,17 @@ function StatePanel({ levelDef, quantumState }: StatePanelProps) {
           <h3>Banned Commands</h3>
           {levelDef.bannedCommands.map(c =>
             <div>
-              {getName(animals, c.attacker)} can't shoot {getName(animals, c.target)}
+              {c.attacker === -1
+                ? "No one can shoot " + animals.get(c.target)?.name
+                : c.target === -1
+                  ? animals.get(c.attacker)?.name + " can't shoot anyone"
+                  : animals.get(c.attacker)?.name + " can't shoot " + animals.get(c.target)?.name
+              }
             </div>
           )}
         </div>}
     </div>
   );
-}
-
-function getName(animals: AnimalDefs, id: AnimalID): string {
-  let animal = animals.get(id);
-  return animal === undefined ? "Anyone" : animal.name;
 }
 
 export type { StatePanelProps };

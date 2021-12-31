@@ -1,6 +1,9 @@
-import { AnimalMap, Gate, Command } from "./quantum";
+import { AnimalMap, Gate, Command, AnimalID } from "./quantum";
 
-enum AnimalState { Asleep, Awake, Random };
+type AnimalState =
+    { kind: "asleep" }
+    | { kind: "awake" }
+    | { kind: "random" }
 
 type AnimalDefs = AnimalMap<{
     name: string,
@@ -29,8 +32,7 @@ function parseAnimalDefs(input: String): [AnimalDefs, Command[]] {
         let subparts2 = subparts1[0].split(" starts ");
         let name = subparts2[0];
         let state = subparts2[1];
-        state = state[0].toUpperCase() + state.slice(1);
-        let startingState = AnimalState[state as keyof typeof AnimalState];
+        let startingState = { kind: state } as AnimalState;
         return [[i, {
             name: name,
             gate: gate,
@@ -181,10 +183,21 @@ Cat A shoots Cat B
 ===
 Intro to Hadamard
 ---
+Cat A starts awake, carries a CH
+Dog A starts random
+---
+[your orders]
+Dog A shoots Cat B
+---
+Cat A shoots Dog A
+===
+Double Hadamard
+---
 Cat A starts awake
 Cat B starts awake
 Dog A starts awake, carries a CH
 Dog B starts asleep, carries a CH
+Banned: Cat B shoots anyone
 ---
 Dog A shoots Cat B
 [your orders]
@@ -293,10 +306,13 @@ Cat A starts awake, carries a CH
 Cat B starts awake
 Cat C starts awake
 Dog A starts awake, carries a CH
-Dog B starts random
+Dog B starts asleep
+Dog C starts random
 Banned: Cat A shoots Cat B
+Banned: anyone shoots Dog C
 ---
 Dog A shoots Cat B
+Dog C shoots Dog B
 Dog B shoots Cat C
 [your orders]
 Dog B shoots Cat C
@@ -313,23 +329,32 @@ Undo the Hadamard - Z
 ---
 Cat A starts awake, carries a CH
 Cat B starts awake, carries a CZ
-Cat C starts awake, carries a CH
+Cat C starts awake
 Dog A starts awake, carries a CH
-Dog B starts random
+Dog B starts asleep
+Dog C starts random
 Banned: Cat A shoots Cat B
+Banned: anyone shoots Dog C
 ---
 Dog A shoots Cat B
+Dog C shoots Dog B
 Dog B shoots Cat C
 [your orders]
 Dog B shoots Cat C
 ---
+Cat A shoots Cat C
 Cat B shoots Cat C
+Cat A shoots Cat C
 Cat C shoots Cat B
+Cat A shoots Cat C
 Cat B shoots Cat C
 Cat A shoots Cat C
 Cat B shoots Cat C
+Cat A shoots Cat C
 Cat C shoots Cat B
+Cat A shoots Cat C
 Cat B shoots Cat C
+Cat A shoots Cat C
 ===
 Very Hard Level
 ---
@@ -366,11 +391,14 @@ Cat A starts awake
 Cat B starts awake, carries a CH
 Cat C starts awake, carries a CZ
 Dog A starts awake, carries a CH
-Dog B starts random
+Dog B starts asleep
+Dog C starts random
 Banned: Cat A shoots anyone
 Banned: Cat B shoots Cat A
+Banned: anyone shoots Dog C
 ---
 Dog A shoots Cat A
+Dog C shoots Dog B
 [your orders]
 Dog B shoots Cat A
 ---
@@ -401,5 +429,5 @@ Cat B shoots Dog B
 Cat C shoots Cat A
 `);
 
-export type { AnimalDefs, LevelDefinition }
-export { levels, AnimalState }
+export type { AnimalDefs, LevelDefinition, AnimalState }
+export { levels }

@@ -7,6 +7,15 @@ import { Command } from './quantum';
 import { levels, LevelDefinition } from './levelDefs';
 import { initialState, evaluate, noEvaluation, EvaluationState } from './evaluator';
 
+for (const level of levels) {
+  const evalState = evaluate(level, level.referenceSolution);
+  if (evalState.kind === "done" && evalState.success) {
+    console.log("Validated reference solution");
+  } else {
+    console.log("Reference solution invalid for " + level.levelName);
+  }
+}
+
 export default function () {
   const [level, setLevel] = useState(levels[0]);
   const [commands, setCommands] = useState<Command[]>([]);

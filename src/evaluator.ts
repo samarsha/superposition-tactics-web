@@ -12,10 +12,10 @@ const noEvaluation: EvaluationState = { kind: "none" }
 
 function initialState(levelDef: LevelDefinition): QuantumState {
     let awake = new Map(Array.from(levelDef.animals.entries())
-        .map(e => [e[0], e[1].startingState == AnimalState.Awake]));
+        .map(e => [e[0], e[1].startingState.kind === "awake"]));
     let quantumState = [{ amplitude: 1, awake }];
     for (let e of Array.from(levelDef.animals.entries())) {
-        if (e[1].startingState == AnimalState.Random) {
+        if (e[1].startingState.kind === "random") {
             quantumState = processCommand(Gate.CH, { attacker: -1, target: e[0] }, quantumState);
         }
     }
