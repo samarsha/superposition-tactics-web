@@ -1,4 +1,4 @@
-import { AnimalMap, Gate, Command, AnimalID } from "./quantum";
+import { AnimalMap, Gate, Command } from "./quantum";
 
 type AnimalState =
     { kind: "asleep" }

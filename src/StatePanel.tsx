@@ -1,5 +1,5 @@
-import { AnimalID, Gate, QuantumState } from "./quantum";
-import { AnimalState, AnimalDefs, LevelDefinition } from "./levelDefs";
+import { Gate, QuantumState } from "./quantum";
+import { LevelDefinition } from "./levelDefs";
 
 type StatePanelProps = {
   levelDef: LevelDefinition,

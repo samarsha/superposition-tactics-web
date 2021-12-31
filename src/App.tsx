@@ -5,7 +5,7 @@ import { StatePanel } from './StatePanel';
 import { TopBar } from './TopBar';
 import { Command } from './quantum';
 import { levels, LevelDefinition } from './levelDefs';
-import { initialState, evaluate, noEvaluation, EvaluationState } from './evaluator';
+import { initialState, evaluate, noEvaluation } from './evaluator';
 
 for (const level of levels) {
   const evalState = evaluate(level, level.referenceSolution);

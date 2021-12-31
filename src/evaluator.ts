@@ -1,5 +1,5 @@
-import { AnimalMap, Command, processCommand, Gate, QuantumState } from "./quantum";
-import { AnimalState, LevelDefinition } from "./levelDefs";
+import { Command, processCommand, Gate, QuantumState } from "./quantum";
+import { LevelDefinition } from "./levelDefs";
 
 type EvaluationTimeline = QuantumState[]
 
@@ -24,7 +24,7 @@ function initialState(levelDef: LevelDefinition): QuantumState {
 
 function evaluate(levelDef: LevelDefinition, commands: Command[]): EvaluationState {
     commands = Array.prototype.concat(levelDef.dogInitialCommands, commands, levelDef.dogFinalCommands);
-    if (commands.some(c => c.attacker == c.target))
+    if (commands.some(c => c.attacker === c.target))
         return { kind: "error", message: "Cannot command a cat to shoot itself" };
     if (commands.some(c => levelDef.bannedCommands.some(c2 =>
         (c.attacker === c2.attacker || c2.attacker === -1)
