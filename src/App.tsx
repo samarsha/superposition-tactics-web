@@ -2,138 +2,116 @@ import { useEffect, useState } from 'react';
 import './App.scss';
 import { CommandPanel } from './CommandPanel';
 import { StatePanel } from './StatePanel';
+import { TopBar } from './TopBar';
 import { Command } from './quantum';
 import { levels, LevelDefinition } from './levelDefs';
-import { step, startEvaluation, noEvaluation, EvaluationState } from './evaluator';
+import { initialState, evaluate, noEvaluation, EvaluationState } from './evaluator';
 
 export default function () {
   const [level, setLevel] = useState(levels[0]);
   const [commands, setCommands] = useState<Command[]>([]);
+  const [quantumState, setQuantumState] = useState(initialState(level));
+
+  const [paused, setPaused] = useState(false);
+  const [step, setStep] = useState(0);
   const [evalState, setEvalState] = useState(noEvaluation);
-  const [updateSpeed, setUpdateSpeed] = useState(1);
 
   function onLevelChange(l: LevelDefinition): void {
     setLevel(l);
     setCommands([]);
+    setQuantumState(initialState(l));
+    setStep(0);
     setEvalState(noEvaluation);
   }
 
   function onEvaluate(): void {
-    setEvalState(startEvaluation(level, commands));
+    setStep(0);
+    setEvalState(evaluate(level, commands));
   }
 
   function onDoOneStep(): void {
-    if (evalState.kind === "calculating") {
-      setEvalState(step(level, commands, evalState.data));
+    setPaused(true);
+    if (evalState.kind === "done") {
+      if (step < evalState.timeline.length - 1) {
+        setStep(step + 1);
+      }
+    }
+  }
+
+  function onPlayPause(): void {
+    setPaused(!paused);
+  }
+
+  function onBackOneStep(): void {
+    setPaused(true);
+    if (step > 0) {
+      setStep(step - 1);
     }
   }
 
   function onSeeAnswer(): void {
     setCommands(level.referenceSolution);
+    setStep(0);
     setEvalState(noEvaluation);
   }
 
-  function onUpdateSpeedChange(event: React.ChangeEvent<HTMLInputElement>): void {
-    setUpdateSpeed(Number(event.target.value));
-  }
-
   useEffect(() => {
-    if (updateSpeed !== 0) {
+    if (!paused) {
       const timeout = setTimeout(() => {
-        if (evalState.kind === "calculating") {
-          setEvalState(step(level, commands, evalState.data));
+        if (evalState.kind === "done") {
+          if (step < evalState.timeline.length - 1) {
+            setStep(step + 1);
+          }
         }
-      }, 1000 / updateSpeed);
+      }, 1000);
       return () => clearTimeout(timeout);
     }
   })
 
   return (
     <div className="App">
-      {levelSelector(level, evalState, updateSpeed, onLevelChange, onEvaluate, onDoOneStep, onSeeAnswer, onUpdateSpeedChange)}
+      <TopBar
+        level={level}
+        paused={paused}
+        step={step}
+        evalState={evalState}
+        onLevelChange={onLevelChange}
+        onEvaluate={onEvaluate}
+        onStepForward={onDoOneStep}
+        onPlayPause={onPlayPause}
+        onStepBack={onBackOneStep}
+        onSeeAnswer={onSeeAnswer}
+      />
 
       <div className="main-panel">
         <StatePanel
           levelDef={level}
-          evalData={evalState.kind === "calculating" ? evalState.data : undefined}
+          quantumState={evalState.kind === "done"
+            ? evalState.timeline[step]
+            : quantumState}
         />
 
         <CommandPanel
           level={level}
           commands={commands}
-          evalData={evalState.kind === "calculating" ? evalState.data : undefined}
+          step={evalState.kind === "done" ? step : undefined}
+          success={evalState.kind === "done" ? evalState.success : undefined}
           onAdd={() => {
             setCommands([...commands, { attacker: 0, target: 1 }]);
+            setStep(0);
             setEvalState(noEvaluation);
           }}
           onChange={(command, index) => {
             setCommands(commands.map((c, i) => i === index ? command : c));
+            setStep(0);
             setEvalState(noEvaluation);
           }}
           onRemove={index => {
             setCommands(commands.filter((_, i) => i !== index));
+            setStep(0);
             setEvalState(noEvaluation);
           }}
         />
-      </div>
-    </div>
-  );
-}
-
-function levelSelector(
-  level: LevelDefinition,
-  evalState: EvaluationState,
-  updateSpeed: number,
-  onChange: (level: LevelDefinition) => void,
-  onEvaluate: () => void,
-  onDoOneStep: () => void,
-  onSeeAnswer: () => void,
-  onUpdateSpeedChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
-) {
-  const items = levels.map(l => <option value={l.levelName}>{l.levelName}</option>);
-
-  function onSelectChange(e: React.ChangeEvent<HTMLSelectElement>): void {
-    const level = levels.find(l => l.levelName === e.target.value);
-    if (level === undefined) {
-      console.log("Invalid level name.");
-    } else {
-      onChange(level);
-    }
-  }
-
-  let evalItem = <span></span>
-  switch (evalState.kind) {
-    case "success": evalItem = <span>Result: Success!</span>; break
-    case "failure": evalItem = <span>Result: Failed on trial {evalState.trial + 1}</span>; break
-    case "error": evalItem = <span>Error: {evalState.message}</span>; break
-    case "calculating":
-      if (evalState.data.trialData === undefined)
-        evalItem = <span>Calculating... trial {evalState.data.trial + 1}</span>;
-      else
-        evalItem = <span>Calculating... trial {evalState.data.trial + 1}, step {evalState.data.trialData.commandsProcessed}</span>;
-      break;
-  }
-
-  return (
-    <div className="top-bar">
-      <div>
-        Current Level:
-        <select value={level.levelName} onChange={onSelectChange}>
-          {items}
-        </select>
-      </div>
-      <div>
-        <button onClick={onEvaluate}>Evaluate</button>
-        {evalItem}
-      </div>
-      <div>
-        {evalState.kind === "calculating"
-          ? <button onClick={onDoOneStep}>Step</button>
-          : undefined}
-        <input type="range" value={updateSpeed} min={0} max={2} onChange={onUpdateSpeedChange} step={0.1} />
-      </div>
-      <div>
-        <button onClick={onSeeAnswer}>See Answer</button>
       </div>
     </div>
   );

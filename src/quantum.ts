@@ -68,7 +68,7 @@ function processCommand(gate: Gate, command: Command, quantumState: QuantumState
                 }
                 return [universe];
             case Gate.CH:
-                if (universe.awake.get(command.attacker)) {
+                if (command.attacker == -1 || universe.awake.get(command.attacker)) {
                     if (!universe.awake.get(command.target)) {
                         return [
                             {

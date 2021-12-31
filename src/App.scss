@@ -45,6 +45,15 @@
   div {
     flex-grow: 1;
   }
+
+  .error-message {
+    color: rgb(228, 0, 0);
+    font-weight: bold;
+    font-style: italic;
+  }
+  .step-counter {
+    margin-right: 16px;
+  }
 }
 
 .main-panel {
@@ -120,5 +129,16 @@
 
   .selected-command-item {
     background-color: rgb(248, 255, 155);
+    // border-top: 4px solid rgb(248, 255, 155);
+  }
+  .success-item {
+    color: rgb(40, 170, 1);
+    font-weight: bold;
+    font-style: italic;
+  }
+  .failure-item {
+    color: rgb(228, 0, 0);
+    font-weight: bold;
+    font-style: italic;
   }
 }

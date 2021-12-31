@@ -237,11 +237,10 @@ Dog A starts random
 Dog A shoots Cat B
 [your orders]
 ---
-Cat A shoots Cat B
 Cat A shoots Dog A
+Cat A shoots Cat B
 Cat B shoots Dog A
 Cat A shoots Cat B
-Cat A shoots Dog A
 ===
 Hadamard and Z
 ---
