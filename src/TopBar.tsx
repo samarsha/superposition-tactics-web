@@ -52,6 +52,7 @@ function TopBar({
         <select value={level.levelName} onChange={onLevelDropdown}>
           {levels.map(l => <option value={l.levelName}>{l.levelName}</option>)}
         </select>
+        Par: {level.referenceSolution.length}
       </div>
       <div>
         {midSection}
