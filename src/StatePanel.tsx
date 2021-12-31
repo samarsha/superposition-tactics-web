@@ -24,7 +24,9 @@ function StatePanel({ levelDef, quantumState }: StatePanelProps) {
         <thead>
           <tr>
             {quantumState.map(u =>
-              <th>{u.amplitude.toFixed(2)}</th>
+              <th className={u.amplitude > 0 ? "positive-header" : "negative-header"}>
+                {u.amplitude.toFixed(2)}
+              </th>
             )}
             <th>Name</th>
             <th>Gate</th>

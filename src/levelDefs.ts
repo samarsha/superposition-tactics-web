@@ -181,6 +181,77 @@ Cat A shoots Cat B
 Cat B shoots Cat A
 Cat A shoots Cat B
 ===
+Intro to Z
+---
+Cat A starts awake, carries a CZ
+Dog A starts awake, carries a CZ
+---
+Dog A shoots Cat A
+[your orders]
+---
+Cat A shoots Dog A
+===
+ZZ
+---
+Cat A starts awake
+Cat B starts awake, carries a CZ
+Dog A starts random, carries a CZ
+---
+Dog A shoots Cat A
+[your orders]
+---
+Cat B shoots Dog A
+===
+Counter Z
+---
+Cat A starts awake
+Cat B starts awake, carries a CZ
+Dog A starts random, carries a CZ
+Dog B starts awake
+---
+[your orders]
+Dog A shoots Cat A
+Dog B shoots Cat A
+---
+Cat B shoots Dog A
+Cat A shoots Dog B
+===
+Indirect Z
+---
+Cat A starts awake, carries a CX
+Cat B starts awake, carries a CZ
+Dog A starts awake, carries a CZ
+Dog B starts random, carries a CX
+Banned: Cat B shoots Cat A
+Banned: Cat B shoots Dog B
+---
+Dog B shoots Dog A
+Dog A shoots Cat A
+Dog B shoots Dog A
+Dog B shoots Cat A
+[your orders]
+Dog B shoots Cat A
+---
+Cat A shoots Cat B
+Cat B shoots Dog A
+Cat A shoots Cat B
+Cat B shoots Dog A
+===
+Triple Zs
+---
+Cat A starts awake, carries a CZ
+Cat B starts awake, carries a CZ
+Dog A starts random, carries a CZ
+Dog B starts random, carries a CX
+---
+Dog A shoots Dog B
+Dog B shoots Cat A
+[your orders]
+Dog B shoots Cat A
+---
+Cat A shoots Dog A
+Cat B shoots Dog A
+===
 Intro to Hadamard
 ---
 Cat A starts awake, carries a CH

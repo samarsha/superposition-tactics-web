@@ -39,7 +39,7 @@ function evaluate(levelDef: LevelDefinition, commands: Command[]): EvaluationSta
         timeline.push(quantumState);
     }
 
-    let success = quantumState.every(u => Array.from(u.awake.entries()).every(e =>
+    let success = quantumState.every(u => u.amplitude > 0 && Array.from(u.awake.entries()).every(e =>
         !levelDef.animals.get(e[0])?.name.startsWith("Cat") || e[1]))
     return { kind: "done", success, timeline };
 }
